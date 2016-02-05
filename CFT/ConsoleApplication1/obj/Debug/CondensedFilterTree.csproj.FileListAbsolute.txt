@@ -4,3 +4,9 @@ C:\Users\eyapeleg\Desktop\CFT\ConsoleApplication1\bin\Debug\ConsoleApplication1.
 C:\Users\eyapeleg\Desktop\CFT\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
 C:\Users\eyapeleg\Desktop\CFT\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
 C:\Users\eyapeleg\Desktop\CFT\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
+C:\Users\eyapeleg\Desktop\cft\CFT\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe.config
+C:\Users\eyapeleg\Desktop\cft\CFT\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
+C:\Users\eyapeleg\Desktop\cft\CFT\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
+C:\Users\eyapeleg\Desktop\cft\CFT\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
+C:\Users\eyapeleg\Desktop\cft\CFT\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
+C:\Users\eyapeleg\Desktop\cft\CFT\ConsoleApplication1\obj\Debug\CondensedFilterTree.csprojResolveAssemblyReference.cache

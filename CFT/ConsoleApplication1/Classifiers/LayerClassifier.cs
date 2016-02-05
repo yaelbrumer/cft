@@ -7,5 +7,9 @@ namespace ConsoleApplication1
 {
     class LayerClassifier
     {
+        public Classification classify(Dataset dataset)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

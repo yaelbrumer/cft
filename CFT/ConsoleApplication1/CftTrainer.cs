@@ -6,37 +6,71 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication1
 {
-    class CftTrainer : IClassifier
+    class CftTrainer
     {
-        ICostCalculator costCalculator;
-        IPredictor predictor;
-        ITrainer trainer;
+        private DatasetPrediction datasetPrediction;
+        private int M;
 
-        public CftTrainer(ICostCalculator costCalculator, IPredictor predictor, ITrainer trainer)
+        private TreeClassifier treeClassifier;
+
+        private ICostCalculator costCalculator;
+        private IWeightedClassifier weightedClassifier;
+
+        public CftTrainer(ICostCalculator costCalculator, IWeightedClassifier trainer, int M)
         {
             this.costCalculator = costCalculator;
-            this.predictor = predictor;
-            this.trainer = trainer;
+            this.weightedClassifier = trainer;
+            this.M = M;
         }
 
         private DatasetPrediction createInitialPredictionDataSet(Dataset dataset)
         {
             throw new NotImplementedException();
-            return new DatasetPrediction();
+        }
+
+        private int caluculateK(Dataset dataset)
+        {
+            throw new NotImplementedException();
         }
 
         private DatasetLayerK dataPreparation(DatasetPrediction dp)
         {
             throw new NotImplementedException();
-            return new DatasetLayerK();
         }
 
-        private TreeClassifier createLayersClassifiers(DatasetPrediction dataset)
+        private TreeClassifier createTreeClassifier(DatasetPrediction datasetPrediction, int k)
+        {
+            for (int i = k; i > 0; i++)//todo - verify indexing 
+            {
+                DatasetLayerK datasetLayerK = dataPreparation(datasetPrediction);
+                LayerClassifier layerClassifier = weightedClassifier.train(datasetLayerK);
+                treeClassifier.addLayer(layerClassifier);
+            }
+            return treeClassifier;
+        }
+
+        private DatasetPrediction addClassificationToDataset(Classification Classification, DatasetPrediction datasetPrediction)
         {
             throw new NotImplementedException();
-            return new TreeClassifier();
         }
 
+        private CftClassifier createCftClassifier(TreeClassifier treeClassifier)
+        {
+            throw new NotImplementedException();
+        }
+
+        public CftClassifier train(Dataset dataset)
+        {
+            this.datasetPrediction = createInitialPredictionDataSet(dataset);
+            int k = caluculateK(dataset);
+            for (int i = 0; i<M; i++)
+            {
+                this.treeClassifier = createTreeClassifier(datasetPrediction,k);
+                Classification classification = treeClassifier.classify(dataset);
+                this.datasetPrediction = addClassificationToDataset(classification, this.datasetPrediction);
+            }
+            return createCftClassifier(this.treeClassifier);
+        }
     }
         
     

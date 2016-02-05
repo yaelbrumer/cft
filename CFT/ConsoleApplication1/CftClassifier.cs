@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication1
 {
-    interface IPredictor
+    class CftClassifier
     {
+        public Classification classify(Dataset dataset)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

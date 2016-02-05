@@ -8,5 +8,14 @@ namespace ConsoleApplication1
 {
     class TreeClassifier
     {
+        public Classification classify(Dataset dataset)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void addLayer(LayerClassifier layerClassifier)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
