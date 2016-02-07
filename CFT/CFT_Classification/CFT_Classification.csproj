@@ -106,7 +106,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Resources\examples.xls" />
+    <None Include="Resources\emotions.xls" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
