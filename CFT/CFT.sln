@@ -1,20 +1,49 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CondensedFilterTree", "ConsoleApplication1\CondensedFilterTree.csproj", "{919AA9EC-8468-47F2-9A2D-511F31253440}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CFT_Classification", "CFT_Classification\CFT_Classification.csproj", "{50C037CA-FFCE-426F-8EF5-1CCF27BE854E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D2E349AA-F679-4C50-9E3C-75B152AA567F}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{919AA9EC-8468-47F2-9A2D-511F31253440}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{919AA9EC-8468-47F2-9A2D-511F31253440}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{919AA9EC-8468-47F2-9A2D-511F31253440}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{919AA9EC-8468-47F2-9A2D-511F31253440}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{919AA9EC-8468-47F2-9A2D-511F31253440}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{919AA9EC-8468-47F2-9A2D-511F31253440}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{919AA9EC-8468-47F2-9A2D-511F31253440}.Release|Any CPU.Build.0 = Release|Any CPU
+		{919AA9EC-8468-47F2-9A2D-511F31253440}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{919AA9EC-8468-47F2-9A2D-511F31253440}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{919AA9EC-8468-47F2-9A2D-511F31253440}.Release|x86.ActiveCfg = Release|Any CPU
+		{50C037CA-FFCE-426F-8EF5-1CCF27BE854E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50C037CA-FFCE-426F-8EF5-1CCF27BE854E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50C037CA-FFCE-426F-8EF5-1CCF27BE854E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{50C037CA-FFCE-426F-8EF5-1CCF27BE854E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{50C037CA-FFCE-426F-8EF5-1CCF27BE854E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{50C037CA-FFCE-426F-8EF5-1CCF27BE854E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50C037CA-FFCE-426F-8EF5-1CCF27BE854E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50C037CA-FFCE-426F-8EF5-1CCF27BE854E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{50C037CA-FFCE-426F-8EF5-1CCF27BE854E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{50C037CA-FFCE-426F-8EF5-1CCF27BE854E}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
