@@ -1,5 +1,6 @@
 ﻿using Accord.IO;
 using Accord.Math;
+using AForge;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,6 +37,9 @@ namespace CFT_Classification
                     DataTable tableSource = db.GetWorksheet(0);
                     double[,] sourceMatrix = tableSource.ToMatrix(out columnNames);
                     //var x  = tableSource.ToArray(out columnNames);
+
+                    // Get only the input vector values (in the first two columns)
+                    double[][] inputs = sourceMatrix.GetColumns(0).ToArray();
 
                     // Detect the kind of problem loaded.
                     if (sourceMatrix.GetLength(1) == 2)
