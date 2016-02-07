@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApplication1
+namespace Classification.CFT
 {
-    class CftTrainer
+    public class CftTrainer
     {
         private DatasetPrediction datasetPrediction;
         private int M;

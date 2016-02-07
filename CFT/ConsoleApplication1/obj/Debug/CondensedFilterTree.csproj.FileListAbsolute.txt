@@ -10,9 +10,9 @@ C:\Users\eyapeleg\Desktop\cft\CFT\ConsoleApplication1\obj\Debug\ConsoleApplicati
 C:\Users\eyapeleg\Desktop\cft\CFT\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
 C:\Users\eyapeleg\Desktop\cft\CFT\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
 C:\Users\eyapeleg\Desktop\cft\CFT\ConsoleApplication1\obj\Debug\CondensedFilterTree.csprojResolveAssemblyReference.cache
-C:\Users\t-ybrum\Source\Repos\cft\CFT\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe.config
-C:\Users\t-ybrum\Source\Repos\cft\CFT\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
-C:\Users\t-ybrum\Source\Repos\cft\CFT\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
-C:\Users\t-ybrum\Source\Repos\cft\CFT\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
-C:\Users\t-ybrum\Source\Repos\cft\CFT\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
 C:\Users\t-ybrum\Source\Repos\cft\CFT\ConsoleApplication1\obj\Debug\CondensedFilterTree.csprojResolveAssemblyReference.cache
+C:\Users\t-ybrum\Source\Repos\cft\CFT\ConsoleApplication1\bin\Debug\Classification.CFT.dll.config
+C:\Users\t-ybrum\Source\Repos\cft\CFT\ConsoleApplication1\bin\Debug\Classification.CFT.dll
+C:\Users\t-ybrum\Source\Repos\cft\CFT\ConsoleApplication1\bin\Debug\Classification.CFT.pdb
+C:\Users\t-ybrum\Source\Repos\cft\CFT\ConsoleApplication1\obj\Debug\Classification.CFT.dll
+C:\Users\t-ybrum\Source\Repos\cft\CFT\ConsoleApplication1\obj\Debug\Classification.CFT.pdb

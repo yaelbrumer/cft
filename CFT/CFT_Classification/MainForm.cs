@@ -1,6 +1,7 @@
 ﻿using Accord.IO;
 using Accord.Math;
 using AForge;
+using Classification.CFT;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +18,7 @@ namespace CFT_Classification
     public partial class MainForm : Form
     {
         string[] columnNames; // stores the column names for the loaded data
+        CftTrainer cftTrainer;
 
         public MainForm()
         {
