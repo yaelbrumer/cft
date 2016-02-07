@@ -32,7 +32,7 @@ namespace CFT_Classification
                 if (extension == ".xls" || extension == ".xlsx")
                 {
                     ExcelReader db = new ExcelReader(filename, true, false);
-                    //TODO: do we want to support multiple worksheets selection? 
+
                     DataTable tableSource = db.GetWorksheet(0);
                     double[,] sourceMatrix = tableSource.ToMatrix(out columnNames);
                     //var x  = tableSource.ToArray(out columnNames);
