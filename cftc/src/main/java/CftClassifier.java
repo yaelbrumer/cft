@@ -1,5 +1,5 @@
 import classifiers.Classification;
-import datasets.Dataset;
+import datasets.MultiLabelDataset;
 import exceptions.NotImplementedException;
 
 /**
@@ -7,7 +7,7 @@ import exceptions.NotImplementedException;
  */
 public class CftClassifier {
 
-    public Classification classify(Dataset dataset)
+    public Classification classify(MultiLabelDataset dataset)
     {
         throw new NotImplementedException();
     }
