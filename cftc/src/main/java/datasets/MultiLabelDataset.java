@@ -6,11 +6,10 @@ import mulan.core.ArgumentNullException;
 import mulan.data.*;
 import weka.core.*;
 import weka.core.converters.ConverterUtils;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Add;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by eyapeleg on 2/12/2016.
@@ -63,20 +62,19 @@ public class MultiLabelDataset {
         insertLabelToDataset();
     }
 
-    private void insertLabelToDataset() {
+    private void insertLabelToDataset() throws Exception {
 
         int lastIndex = dataSet.numAttributes();
-        Attribute labelAtt = new Attribute("Class",(FastVector) null);
+        int k = labelsMetaData.getNumLabels();
+        Attribute att = new Attribute("Class",(FastVector) null);
+        dataSet.insertAttributeAt(att, lastIndex);
 
-        dataSet.insertAttributeAt(labelAtt, dataSet.numAttributes());
-
-        //Calculate the new label for each instance
-        for(int i = 0; i< dataSet.numAttributes(); ++i)
+        //Save the combination of possible classes
+        for(int i = 0; i< dataSet.numInstances(); ++i)
         {
-            String label = toBitString(dataSet.instance(i), labelsMetaData.getNumLabels());
+            String label = toBitString(dataSet.instance(i), k);
             this.classes.add(label);
-            //label.toCharArray();
-            //dataSet.instance(i).setValue(labelAtt, label);
+            dataSet.instance(i).setValue(lastIndex, label);
         }
 
         dataSet.setClassIndex(lastIndex);
@@ -97,8 +95,8 @@ public class MultiLabelDataset {
         StringBuilder sb = new StringBuilder(L);
         int numOfAtt = x.numAttributes();
 
-        int startIndex = numOfAtt - L;
-        for(int i = startIndex; i < numOfAtt; i++) {
+        int startIndex = numOfAtt - L - 1;
+        for(int i = startIndex; i < numOfAtt - 1; i++) {
             sb.append((int)Math.round(x.value(i)));
         }
         return sb.toString();
