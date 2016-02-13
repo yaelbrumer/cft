@@ -1,9 +1,8 @@
 import classifiers.Classification;
 import classifiers.LayerClassifier;
 import classifiers.TreeClassifier;
-import datasets.Dataset;
-import datasets.DatasetLayerK;
-import datasets.DatasetPrediction;
+import datasets.MultiLabelDataset;
+import datasets.MultiLabelDatasetLayerK;
 import exceptions.NotImplementedException;
 import interfaces.CostCalculator;
 import interfaces.WeightedClassifier;
@@ -13,7 +12,6 @@ import interfaces.WeightedClassifier;
  */
 public class CftTrainer {
 
-    private DatasetPrediction datasetPrediction;
     private int M;
 
     private TreeClassifier treeClassifier;
@@ -28,35 +26,20 @@ public class CftTrainer {
         this.M = M;
     }
 
-    private DatasetPrediction createInitialPredictionDataSet(Dataset dataset)
+    private MultiLabelDatasetLayerK dataPreparation(MultiLabelDataset dp)
     {
         throw new NotImplementedException();
     }
 
-    private int caluculateK(Dataset dataset)
-    {
-        throw new NotImplementedException();
-    }
-
-    private DatasetLayerK dataPreparation(DatasetPrediction dp)
-    {
-        throw new NotImplementedException();
-    }
-
-    private TreeClassifier createTreeClassifier(DatasetPrediction datasetPrediction, int k)
+    private TreeClassifier createTreeClassifier(MultiLabelDataset MultiLabelDataset, int k)
     {
         for (int i = k; i > 0; i++)//todo - verify indexing
         {
-            DatasetLayerK datasetLayerK = dataPreparation(datasetPrediction);
-            LayerClassifier layerClassifier = weightedClassifier.train(datasetLayerK);
+            MultiLabelDatasetLayerK multiLabelDatasetLayerK = dataPreparation(MultiLabelDataset);
+            LayerClassifier layerClassifier = weightedClassifier.train(multiLabelDatasetLayerK);
             treeClassifier.addLayer(layerClassifier);
         }
         return treeClassifier;
-    }
-
-    private DatasetPrediction addClassificationToDataset(Classification Classification, DatasetPrediction datasetPrediction)
-    {
-        throw new NotImplementedException();
     }
 
     private CftClassifier createCftClassifier(TreeClassifier treeClassifier)
@@ -64,17 +47,15 @@ public class CftTrainer {
         throw new NotImplementedException();
     }
 
-    public CftClassifier train(Dataset dataset)
+    public CftClassifier train(MultiLabelDataset dataset)
     {
-        this.datasetPrediction = createInitialPredictionDataSet(dataset);
-        int k = caluculateK(dataset);
+        int k = dataset.getNumLabels();
         for (int i = 0; i<M; i++)
         {
-            this.treeClassifier = createTreeClassifier(datasetPrediction,k);
+            this.treeClassifier = createTreeClassifier(dataset,k);
             Classification classification = treeClassifier.classify(dataset);
-            this.datasetPrediction = addClassificationToDataset(classification, this.datasetPrediction);
+            dataset.addClassificationToDataset(classification);
         }
         return createCftClassifier(this.treeClassifier);
     }
 }
-

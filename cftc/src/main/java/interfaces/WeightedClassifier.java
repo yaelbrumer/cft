@@ -1,12 +1,12 @@
 package interfaces;
 
 import classifiers.LayerClassifier;
-import datasets.DatasetLayerK;
+import datasets.MultiLabelDatasetLayerK;
 
 /**
  * Created by eyapeleg on 2/12/2016.
  */
 public interface WeightedClassifier {
 
-    LayerClassifier train(DatasetLayerK dataset);
+    LayerClassifier train(MultiLabelDatasetLayerK dataset);
 }
