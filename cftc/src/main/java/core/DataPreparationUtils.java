@@ -7,6 +7,7 @@ import weka.core.Instance;
  */
 public class DataPreparationUtils {
 
+    //todo - check if still needed
     public static String toBitString(Instance x, int L) {
         StringBuilder sb = new StringBuilder(L);
         int firstLabelIndex = x.numAttributes() - L;

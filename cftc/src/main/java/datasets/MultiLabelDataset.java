@@ -1,8 +1,6 @@
 package datasets;
 
-import core.MLUtils;
 import exceptions.NotImplementedException;
-import mulan.core.ArgumentNullException;
 import weka.core.*;
 import java.util.*;
 
@@ -12,45 +10,20 @@ import java.util.*;
 public class MultiLabelDataset implements Iterable<CftInstance> {
 
     private Instances dataSet;
-    private int k;
+    private int numOfLables;
     private TreeMap<Integer, List<String>> yPredictedList;
     private TreeMap<Integer, String> yActualList;
-    private HashSet<String> classes; //todo - remove
 
-    public MultiLabelDataset(String arffFilePath, int numLabelAttributes) throws Exception {
+    public MultiLabelDataset(final int numOfLables , Instances dataSet ,TreeMap<Integer, List<String>> yPredictedList,TreeMap<Integer, String> yActualList) throws Exception {
 
-        if(arffFilePath == null) {
-            throw new ArgumentNullException("arffFilePath");
-        } else if(numLabelAttributes < 2) {
-            throw new IllegalArgumentException("The number of label attributes must me at least 2 or higher.");
-        } else {
-            Instances data = MLUtils.loadInstances(arffFilePath);
-            this.k = numLabelAttributes;
-            this.dataSet = data;
-            this.yActualList = MLUtils.CreateLabelValue(dataSet, k);
-            this.yPredictedList = MLUtils.CreatePredictedList(yActualList);
-            this.classes = MLUtils.GetDistinctValues(yActualList);
-        }
+        this.numOfLables = numOfLables;
+        this.dataSet = dataSet;
+        this.yActualList = yActualList;
+        this.yPredictedList = yPredictedList;
+
     }
 
-    public int getK() {
-        return k;
-    }
-
-//    private void insertLabelToDataset() throws Exception {
-//
-//        int lastIndex = dataSet.numAttributes();
-//        Attribute att = new Attribute("Class",(FastVector) null);
-//        dataSet.insertAttributeAt(att, lastIndex);
-//        dataSet.setClassIndex(lastIndex);
-//    }
-
-    private MultiLabelDataset createInitialPredictionDataSet()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Iterator<CftInstance> iterator(){
+    public final Iterator<CftInstance> iterator(){
         return new Iterator<CftInstance>() {
 
             private int position = 0;
@@ -77,8 +50,8 @@ public class MultiLabelDataset implements Iterable<CftInstance> {
         };
     }
 
-    public int getNumLabels() {
-        throw new NotImplementedException();
+    public final int getNumOfLables() {
+        return numOfLables;
     }
 
     public void addMisclassified(CftInstance actual, String missClassified) {

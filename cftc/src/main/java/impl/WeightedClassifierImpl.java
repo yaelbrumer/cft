@@ -10,15 +10,13 @@ import weka.core.Instances;
 /**
  * Created by eyapeleg on 2/13/2016.
  */
-public class WeightedClassifierImpl implements WeightedClassifier {
+public final class WeightedClassifierImpl implements WeightedClassifier {
 
-    WeightedClassifier weightedClassifier;
-
-    public void train(Instances dataSet) throws Exception {
+    public final void train(final Instances dataSet) throws Exception {
         throw new NotImplementedException("convert the double result into a t0/t1");
     }
 
-    public String classify(Instance instance) throws Exception {
+    public final String classify(final Instance instance) throws Exception {
         throw new NotImplementedException("convert the double result into a t0/t1");
     }
 }

@@ -49,7 +49,7 @@ public final class TreeClassifier {
             return prediction.getT();
     }
 
-    public final TreeClassifier train(List<CftInstance> trainingSet) throws Exception {
+    public final TreeClassifier train(final List<CftInstance> trainingSet) throws Exception {
         if (trainingSet==null || trainingSet.size()==0)
             throw new IllegalArgumentException("training set must not be null or size 0");
 

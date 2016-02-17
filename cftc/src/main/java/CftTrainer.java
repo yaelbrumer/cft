@@ -5,27 +5,27 @@ import interfaces.CostCalculator;
 import interfaces.WeightedClassifier;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-/**
- * Created by eyapeleg on 2/12/2016.
- */
 final public class CftTrainer {
 
     private final int M;
+
     private final CostCalculator costCalculator;
+
     private final WeightedClassifier weightedClassifier;
 
-    public CftTrainer(CostCalculator costCalculator, WeightedClassifier trainer, int M) {
+    public CftTrainer(final CostCalculator costCalculator, final WeightedClassifier trainer, final int M) {
         this.costCalculator = costCalculator;
         this.weightedClassifier = trainer;
         this.M = M;
     }
 
-    private TreeClassifier buildTreeClassifier(final MultiLabelDataset dataset, TreeClassifier treeClassifier, final int k)
-            throws Exception {
+
+    private TreeClassifier buildTreeClassifier(final MultiLabelDataset dataset) throws Exception {
+
+        TreeClassifier treeClassifier = new TreeClassifier(weightedClassifier);
+        final int k = dataset.getNumOfLables();
 
         List<CftInstance> trainingSet;
         for (int i = k; i > 0; i++)//todo - verify indexing
@@ -42,33 +42,31 @@ final public class CftTrainer {
                 Double costClass0 = costCalculator.getCost(class0, cftInstance.getYactual());
                 Double costClass1 = costCalculator.getCost(class1, cftInstance.getYactual());
                 cftInstanceParent.setBn(costClass0, costClass1);
-                cftInstanceParent.setWn(Math.abs(costClass0-costClass1));
+                cftInstanceParent.setWn(Math.abs(costClass0 - costClass1));
 
                 trainingSet.add(cftInstanceParent);
             }
 
-            treeClassifier= treeClassifier.train(trainingSet);
+            treeClassifier = treeClassifier.train(trainingSet);
         }
         return treeClassifier;
     }
 
     final public CftClassifier train(final MultiLabelDataset dataset) throws Exception {
-        final int k = dataset.getNumLabels();
-        TreeClassifier treeClassifier = new TreeClassifier(weightedClassifier);
+
+        TreeClassifier treeClassifier = null;
 
         for (int i = 0; i < M; i++) {
-            treeClassifier = buildTreeClassifier(dataset, treeClassifier, k);
 
-            Set<CftInstance> cftInstances = new HashSet<CftInstance>();
-            for(CftInstance cftInstance: dataset){
+            treeClassifier = buildTreeClassifier(dataset);
+
+            for (CftInstance cftInstance : dataset) {
                 CftInstance cftInstanceRoot = cftInstance.getRoot();
                 String classification = treeClassifier.classify(cftInstanceRoot);
-                if (classification!=cftInstanceRoot.getYactual()){
+                if (classification != cftInstanceRoot.getYactual()) {
                     dataset.addMisclassified(cftInstanceRoot, classification);
                 }
             }
-
-            // dataset.addClassificationToDataset(classification);
         }
 
         return new CftClassifier(treeClassifier);
