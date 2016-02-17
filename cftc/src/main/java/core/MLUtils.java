@@ -4,10 +4,8 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.lang.reflect.Array;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -63,5 +61,16 @@ public class MLUtils {
 
         return distinctValues;
 
+    }
+
+    public static TreeMap<Integer, List<String>> CreatePredictedList(TreeMap<Integer, String> yActualList) {
+
+        TreeMap<Integer, List<String>> result = new TreeMap<>();
+
+        for(Map.Entry<Integer,String> entry: yActualList.entrySet())
+        {
+            result.put(entry.getKey(), Arrays.asList(entry.getValue()));
+        }
+        return result;
     }
 }

@@ -13,7 +13,7 @@ public class MultiLabelDataset implements Iterable<CftInstance> {
 
     private Instances dataSet;
     private int k;
-    private TreeMap<Integer, String> yPredictedList;
+    private TreeMap<Integer, List<String>> yPredictedList;
     private TreeMap<Integer, String> yActualList;
     private HashSet<String> classes; //todo - remove
 
@@ -28,7 +28,7 @@ public class MultiLabelDataset implements Iterable<CftInstance> {
             this.k = numLabelAttributes;
             this.dataSet = data;
             this.yActualList = MLUtils.CreateLabelValue(dataSet, k);
-            this.yPredictedList = new TreeMap<>(yActualList);
+            this.yPredictedList = MLUtils.CreatePredictedList(yActualList);
             this.classes = MLUtils.GetDistinctValues(yActualList);
         }
     }
@@ -54,17 +54,40 @@ public class MultiLabelDataset implements Iterable<CftInstance> {
         return new Iterator<CftInstance>() {
 
             private int position = 0;
+            private int predictionPosition = 0;
 
             public boolean hasNext() {
-                return (dataSet.numInstances()>position);
+
+                return (yPredictedList.size() > position);
+
+                //if(yPredictedList.get(position).size() > predictionPosition)
+              //      return true;
+
+             //   return
             } //todo - verify indexing
 
             public CftInstance next() {
                 Instance instance = dataSet.instance(position);
-                String yPredicted = yPredictedList.get(position);
-                position++;
-                return new CftInstance(instance,yPredicted);
+
+                String prediction;
+                prediction=yPredictedList.get(position).get(predictionPosition);
+
+                if(!(yPredictedList.get(position).size() > predictionPosition)){
+                    prediction=yPredictedList.get(position).get(predictionPosition);
+                    predictionPosition++;
+                }
+                else {
+                    predictionPosition=0;
+                    prediction=yPredictedList.get(position).get(predictionPosition);
+                    predictionPosition++;
+                }
+
+                if(!(yPredictedList.get(position).size() > predictionPosition)){
+                    position++;
+
+
+                return new CftInstance(instance,prediction);
             }
-        };
+        }
     }
 }
