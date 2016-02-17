@@ -4,6 +4,13 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * Created by ybrumer on 2/17/2016.
  */
@@ -15,8 +22,8 @@ public class MLUtils {
         StringBuilder sb = new StringBuilder(L);
         int numOfAtt = x.numAttributes();
 
-        int startIndex = numOfAtt - L - 1;
-        for(int i = startIndex; i < numOfAtt - 1; i++) {
+        int startIndex = numOfAtt - L;
+        for(int i = startIndex; i < numOfAtt; i++) {
             sb.append((int)Math.round(x.value(i)));
         }
         return sb.toString();
@@ -30,5 +37,31 @@ public class MLUtils {
         Instances data = source.getDataSet();
 
         return data;
+    }
+
+    public static TreeMap<Integer, String> CreateLabelValue(Instances dataSet, int L) {
+
+        TreeMap<Integer, String> result = new TreeMap<Integer, String>();
+
+        for(int i = 0; i< dataSet.numInstances(); ++i)
+        {
+            String label = toBitString(dataSet.instance(i), L);
+            result.put(i, label);
+        }
+
+        return result;
+
+    }
+
+    public static HashSet<String> GetDistinctValues(TreeMap<Integer, String> yActualList) {
+
+        HashSet<String> distinctValues = new HashSet<>();
+
+        yActualList.entrySet().stream().collect(Collectors.groupingBy(
+                Map.Entry::getValue, Collectors.mapping(Map.Entry::getKey, Collectors.toList())))
+                .forEach((value,keys) -> distinctValues.add(value));
+
+        return distinctValues;
+
     }
 }

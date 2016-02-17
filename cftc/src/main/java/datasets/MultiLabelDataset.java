@@ -4,9 +4,7 @@ import classifiers.Classification;
 import core.MLUtils;
 import exceptions.NotImplementedException;
 import mulan.core.ArgumentNullException;
-import mulan.data.*;
 import weka.core.*;
-import weka.core.converters.ConverterUtils;
 import java.util.*;
 
 /**
@@ -16,18 +14,9 @@ public class MultiLabelDataset implements Iterable<CftInstance> {
 
     private Instances dataSet;
     private int k;
-    private String Label;
-    private List<String> yPredictedList;
-    private List<String> yActualList;
-    private Set<String> classes; //todo - remove
-
-    public Set<String> getClasses() {
-        return classes;
-    }
-
-    public int getK() {
-        return k;
-    }
+    private TreeMap<Integer, String> yPredictedList;
+    private TreeMap<Integer, String> yActualList;
+    private HashSet<String> classes; //todo - remove
 
     public MultiLabelDataset(String arffFilePath, int numLabelAttributes) throws Exception {
 
@@ -39,27 +28,23 @@ public class MultiLabelDataset implements Iterable<CftInstance> {
             Instances data = MLUtils.loadInstances(arffFilePath);
             this.k = numLabelAttributes;
             this.dataSet = data;
+            this.yActualList = MLUtils.CreateLabelValue(dataSet, k);
+            this.yPredictedList = new TreeMap<>(yActualList);
+            this.classes = MLUtils.GetDistinctValues(yActualList);
         }
-        classes = new TreeSet<String>();
-        insertLabelToDataset();
     }
 
-    private void insertLabelToDataset() throws Exception {
-
-        int lastIndex = dataSet.numAttributes();
-        Attribute att = new Attribute("Class",(FastVector) null);
-        dataSet.insertAttributeAt(att, lastIndex);
-
-        //Save the combination of possible classes
-        for(int i = 0; i< dataSet.numInstances(); ++i)
-        {
-            String label = MLUtils.toBitString(dataSet.instance(i), k);
-            this.classes.add(label);
-            dataSet.instance(i).setValue(lastIndex, label);
-        }
-
-        dataSet.setClassIndex(lastIndex);
+    public int getK() {
+        return k;
     }
+
+//    private void insertLabelToDataset() throws Exception {
+//
+//        int lastIndex = dataSet.numAttributes();
+//        Attribute att = new Attribute("Class",(FastVector) null);
+//        dataSet.insertAttributeAt(att, lastIndex);
+//        dataSet.setClassIndex(lastIndex);
+//    }
 
     private MultiLabelDataset createInitialPredictionDataSet()
     {
