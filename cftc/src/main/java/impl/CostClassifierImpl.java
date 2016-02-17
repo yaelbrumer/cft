@@ -21,7 +21,7 @@ public class CostClassifierImpl implements CostClassifier {
         this.costSensitiveClassifier.buildClassifier(dataSet);
     }
 
-    public Classification classify(Instance instance) throws Exception {
+    public String classify(Instance instance) throws Exception {
         double classificationResult = costSensitiveClassifier.classifyInstance(instance);
         throw new NotImplementedException("convert the double result into a t0/t1");
     }

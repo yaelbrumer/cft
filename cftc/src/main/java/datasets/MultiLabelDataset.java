@@ -103,10 +103,6 @@ public class MultiLabelDataset implements Iterable<CftInstance> {
         throw new NotImplementedException();
     }
 
-    public MultiLabelDataset addClassificationToDataset(Classification Classification)
-    {
-        throw new NotImplementedException();
-    }
 
     public Iterator<CftInstance> iterator(){
         return new Iterator<CftInstance>() {
@@ -127,6 +123,10 @@ public class MultiLabelDataset implements Iterable<CftInstance> {
     }
 
     public void addClassificationToDataset(){
+        throw new NotImplementedException();
+    }
+
+    public int getNumLabels() {
         throw new NotImplementedException();
     }
 }

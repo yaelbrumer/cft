@@ -7,11 +7,11 @@ import interfaces.CostClassifier;
 /**
  * Created by eyapeleg on 2/12/2016.
  */
-public class CftTrainer {
+final public class CftTrainer {
 
-    private int M;
-    private CostCalculator costCalculator;
-    private CostClassifier costClassifier;
+    private final int M;
+    private final CostCalculator costCalculator;
+    private final CostClassifier costClassifier;
 
     public CftTrainer(CostCalculator costCalculator, CostClassifier trainer, int M)
     {
@@ -27,12 +27,15 @@ public class CftTrainer {
         {
             int j=1;
             for(CftInstance cftInstance:dataset){
-                //Instance instance = cftInstance.getInstance();
-                String yPredicted = cftInstance.getYPredicted();
-                String t = yPredicted.substring(0,yPredicted.length()-j); //todo - verify indexing, move to utils
-                cftInstance.setT(t);
-                String t0 = t+"0"; //todo - move to utils
-                String t1 = t +"1"; //todo - move to utils
+                //String yPredicted = cftInstance.getYPredicted();
+                CftInstance parentT = cftInstance.getParent();
+                CftInstance cftInstance0 = cftInstance.getLeftChild();
+                CftInstance cftInstance1 = cftInstance.getRightChild();
+               // cftInstance1.updateT(cftInstance.getT());
+
+               // String t = yPredicted.substring(0,yPredicted.length()-j); //todo - verify indexing, move to utils
+//                String t0 = t+"0"; //todo - move to utils
+               // String t1 = t +"1"; //todo - move to utils
               //  treeClassifier.classify(instance)
               //  instance.setValue(9999,t); //set t, todo - replace 999 with the relevant attribute/index
                // j++;
@@ -40,19 +43,19 @@ public class CftTrainer {
         }
         return treeClassifier;
     }
-/*
-    public CftClassifier train(MultiLabelDataset dataset)
+
+  /*  final public CftClassifier train(final MultiLabelDataset dataset)
     {
-       // int k = dataset.getNumLabels();
-       // TreeClassifier treeClassifier = new TreeClassifier();
+       final int k = dataset.getNumLabels();
+       TreeClassifier treeClassifier = new TreeClassifier();
 
         for (int i = 0; i<M; i++)
         {
-           // treeClassifier = buildTreeClassifier(dataset, treeClassifier, k);
-          //  Classification classification = treeClassifier.classify(dataset);
-         //   dataset.addClassificationToDataset(classification);
+            treeClassifier = buildTreeClassifier(dataset, treeClassifier, k);
+           // Classification classification = treeClassifier.classify(dataset);
+           // dataset.addClassificationToDataset(classification);
         }
 
-       // return new CftClassifier(treeClassifier);
+       return new CftClassifier(treeClassifier);
     }*/
 }

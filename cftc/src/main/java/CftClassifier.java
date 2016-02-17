@@ -11,7 +11,7 @@ public class CftClassifier {
         throw new NotImplementedException();
     }
 
-    public Classification classify(MultiLabelDataset dataset)
+    public String classify(MultiLabelDataset dataset)
     {
         throw new NotImplementedException();
     }

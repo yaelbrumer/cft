@@ -38,7 +38,7 @@ public final class TreeClassifier {
     }
 
     //// api
-    public String classify(final CftInstance cftInstance) throws Exception {
+   /* public String classify(final CftInstance cftInstance) throws Exception {
         if (cftInstance==null)
             throw new IllegalArgumentException("cftInstance is null");
 
@@ -51,5 +51,5 @@ public final class TreeClassifier {
             return prevTreeClassifier.classify(cftInstanceCopy);
         else
             return cftInstanceCopy.getT();
-    }
+    }*/
 }

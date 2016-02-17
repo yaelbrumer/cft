@@ -7,36 +7,41 @@ import weka.core.Instance;
  */
 public class CftInstance implements Cloneable {
 
-    private Instance instance;
-    private String yPredicted;
-    private String t;
+    private final Instance instance;
+    private final String yPredicted;
+    private final String t;
+    private static int tMax; //todo - implement
 
-    public CftInstance(Instance instance, String yPredicted) {
+    public CftInstance(final Instance instance,final String yPredicted) {
         this.instance = instance;
         this.yPredicted = yPredicted;
+        this.t=yPredicted;
+    }
+
+    private CftInstance(final Instance instance,final String yPredicted,final String t){
+        this.instance = instance;
+        this.yPredicted = yPredicted;
+        this.t=t;
     }
 
     public Instance getInstance() {
         return instance;
     }
 
-    public String getYPredicted() {
-        return yPredicted;
-    }
-
-    public CftInstance clone(){
-        return new CftInstance(instance,yPredicted);
-    }
-
-    public void setT(String t) {
-        this.t = t;
-    }
-
-    public void updateT(String classification) {
-        this.t+=classification;
-    }
-
     public String getT() {
         return this.t;
+    }
+
+    public CftInstance getParent(){
+        String tParent=this.t.substring(0,this.t.length()-1);//todo - verify index
+        return new CftInstance(instance,yPredicted,tParent);
+    }
+
+    public CftInstance getLeftChild(){
+        return new CftInstance(instance,yPredicted,this.t+"0");
+    }
+
+    public CftInstance getRightChild(){
+        return new CftInstance(instance,yPredicted,this.t+"1");
     }
 }
