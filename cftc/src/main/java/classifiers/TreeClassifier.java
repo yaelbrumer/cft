@@ -1,55 +1,64 @@
 package classifiers;
 
 import datasets.CftInstance;
-import interfaces.CostClassifier;
-import weka.core.Instance;
+import interfaces.WeightedClassifier;
+import weka.classifiers.CostMatrix;
+import weka.core.Instances;
+
+import java.util.List;
 
 /**
  * Created by eyapeleg on 2/12/2016.
  */
 public final class TreeClassifier {
 
-    private final CostClassifier costClassifier;
+    private final WeightedClassifier weightedClassifier;
     private final TreeClassifier prevTreeClassifier;
     private final int level;
 
     //// constructors
-    public TreeClassifier(final CostClassifier costClassifier){
-        if (costClassifier==null)
+    public TreeClassifier(final WeightedClassifier weightedClassifier){
+        if (weightedClassifier ==null)
             throw new IllegalArgumentException("constructor values are null");
 
-        this.costClassifier=costClassifier;
+        this.weightedClassifier = weightedClassifier;
         this.prevTreeClassifier=null;
-        this.level=0;
+        this.level=1;
     }
 
-    public TreeClassifier(final CostClassifier costClassifier, final TreeClassifier prevTreeClassifier){
-        if (costClassifier==null || prevTreeClassifier==null)
+    public TreeClassifier(final WeightedClassifier weightedClassifier, final TreeClassifier prevTreeClassifier){
+        if (weightedClassifier ==null || prevTreeClassifier==null)
             throw new IllegalArgumentException("constructor values are null");
 
-        this.costClassifier=costClassifier;
+        this.weightedClassifier = weightedClassifier;
         this.prevTreeClassifier = prevTreeClassifier;
-        this.level = prevTreeClassifier.getLevel()+1;
-    }
-
-    //// accessors
-    public int getLevel(){
-        return level;
+        this.level = prevTreeClassifier.level+1;
     }
 
     //// api
-    public String classify(final CftInstance cftInstance) throws Exception {
+    public final String classify(final CftInstance cftInstance) throws Exception {
         if (cftInstance==null)
             throw new IllegalArgumentException("cftInstance is null");
 
-        CftInstance cftInstanceCopy = cftInstance.clone();
-        Instance instance = cftInstanceCopy.getInstance();
-        String classification = costClassifier.classify(instance);
-        cftInstanceCopy.updateT(classification);
+        String classification = weightedClassifier.classify(cftInstance.getInstance());
+        CftInstance prediction =  cftInstance.getPredictedChild(classification);
 
         if (prevTreeClassifier !=null)
-            return prevTreeClassifier.classify(cftInstanceCopy);
+            return prevTreeClassifier.classify(prediction);
         else
-            return cftInstanceCopy.getT();
+            return prediction.getT();
+    }
+
+    public final TreeClassifier train(List<CftInstance> trainingSet) throws Exception {
+        if (trainingSet==null || trainingSet.size()==0)
+            throw new IllegalArgumentException("training set must not be null or size 0");
+
+        for(CftInstance cftInstance: trainingSet){
+            cftInstance.updateDataValues();
+        }
+        Instances instances = trainingSet.get(0).getInstance().dataset();
+        weightedClassifier.train(instances);
+
+        return new TreeClassifier(weightedClassifier,this);
     }
 }

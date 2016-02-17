@@ -2,57 +2,75 @@ import classifiers.TreeClassifier;
 import datasets.CftInstance;
 import datasets.MultiLabelDataset;
 import interfaces.CostCalculator;
-import interfaces.CostClassifier;
+import interfaces.WeightedClassifier;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by eyapeleg on 2/12/2016.
  */
-public class CftTrainer {
+final public class CftTrainer {
 
-    private int M;
-    private CostCalculator costCalculator;
-    private CostClassifier costClassifier;
+    private final int M;
+    private final CostCalculator costCalculator;
+    private final WeightedClassifier weightedClassifier;
 
-    public CftTrainer(CostCalculator costCalculator, CostClassifier trainer, int M)
-    {
+    public CftTrainer(CostCalculator costCalculator, WeightedClassifier trainer, int M) {
         this.costCalculator = costCalculator;
-        this.costClassifier = trainer;
+        this.weightedClassifier = trainer;
         this.M = M;
     }
 
+    private TreeClassifier buildTreeClassifier(final MultiLabelDataset dataset, TreeClassifier treeClassifier, final int k)
+            throws Exception {
 
-    private TreeClassifier buildTreeClassifier(final MultiLabelDataset dataset, final TreeClassifier treeClassifier, final int k)
-    {
+        List<CftInstance> trainingSet;
         for (int i = k; i > 0; i++)//todo - verify indexing
         {
-            int j=1;
-            for(CftInstance cftInstance:dataset){
-                //Instance instance = cftInstance.getInstance();
-                String yPredicted = cftInstance.getYPredicted();
-                String t = yPredicted.substring(0,yPredicted.length()-j); //todo - verify indexing, move to utils
-                cftInstance.setT(t);
-                String t0 = t+"0"; //todo - move to utils
-                String t1 = t +"1"; //todo - move to utils
-              //  treeClassifier.classify(instance)
-              //  instance.setValue(9999,t); //set t, todo - replace 999 with the relevant attribute/index
-               // j++;
+            trainingSet = new ArrayList<CftInstance>();
+            for (CftInstance cftInstance : dataset) {
+                CftInstance cftInstanceParent = cftInstance.getParent(); //todo- add a validation when it's allowed to take a parent.
+                CftInstance cftInstance0 = cftInstanceParent.getLeftChild(); //todo- add a validation when it's allowed to take a child.
+                CftInstance cftInstance1 = cftInstanceParent.getRightChild();
+
+                String class0 = treeClassifier.classify(cftInstance0);
+                String class1 = treeClassifier.classify(cftInstance1);
+
+                Double costClass0 = costCalculator.getCost(class0, cftInstance.getYactual());
+                Double costClass1 = costCalculator.getCost(class1, cftInstance.getYactual());
+                cftInstanceParent.setBn(costClass0, costClass1);
+                cftInstanceParent.setWn(Math.abs(costClass0-costClass1));
+
+                trainingSet.add(cftInstanceParent);
             }
+
+            treeClassifier= treeClassifier.train(trainingSet);
         }
         return treeClassifier;
     }
-/*
-    public CftClassifier train(MultiLabelDataset dataset)
-    {
-       // int k = dataset.getNumLabels();
-       // TreeClassifier treeClassifier = new TreeClassifier();
 
-        for (int i = 0; i<M; i++)
-        {
-           // treeClassifier = buildTreeClassifier(dataset, treeClassifier, k);
-          //  Classification classification = treeClassifier.classify(dataset);
-         //   dataset.addClassificationToDataset(classification);
+    final public CftClassifier train(final MultiLabelDataset dataset) throws Exception {
+        final int k = dataset.getNumLabels();
+        TreeClassifier treeClassifier = new TreeClassifier(weightedClassifier);
+
+        for (int i = 0; i < M; i++) {
+            treeClassifier = buildTreeClassifier(dataset, treeClassifier, k);
+
+            Set<CftInstance> cftInstances = new HashSet<CftInstance>();
+            for(CftInstance cftInstance: dataset){
+                CftInstance cftInstanceRoot = cftInstance.getRoot();
+                String classification = treeClassifier.classify(cftInstanceRoot);
+                if (classification!=cftInstanceRoot.getYactual()){
+                    dataset.addMisclassified(cftInstanceRoot, classification);
+                }
+            }
+
+            // dataset.addClassificationToDataset(classification);
         }
 
-       // return new CftClassifier(treeClassifier);
-    }*/
+        return new CftClassifier(treeClassifier);
+    }
 }

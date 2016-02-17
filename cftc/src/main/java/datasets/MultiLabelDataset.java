@@ -57,37 +57,31 @@ public class MultiLabelDataset implements Iterable<CftInstance> {
             private int predictionPosition = 0;
 
             public boolean hasNext() {
-
-                return (yPredictedList.size() > position);
-
-                //if(yPredictedList.get(position).size() > predictionPosition)
-              //      return true;
-
-             //   return
-            } //todo - verify indexing
+                return (yPredictedList.size() > position); //todo - verify indexing
+            }
 
             public CftInstance next() {
+
                 Instance instance = dataSet.instance(position);
-
-                String prediction;
-                prediction=yPredictedList.get(position).get(predictionPosition);
+                String prediction = yPredictedList.get(position).get(predictionPosition);
+                String actual = yActualList.get(position);
+                predictionPosition++;
 
                 if(!(yPredictedList.get(position).size() > predictionPosition)){
-                    prediction=yPredictedList.get(position).get(predictionPosition);
-                    predictionPosition++;
-                }
-                else {
                     predictionPosition=0;
-                    prediction=yPredictedList.get(position).get(predictionPosition);
-                    predictionPosition++;
+                    position++;
                 }
 
-                if(!(yPredictedList.get(position).size() > predictionPosition)){
-                    position++;
-
-
-                return new CftInstance(instance,prediction);
+                return new CftInstance(instance,prediction,actual);
             }
-        }
+        };
+    }
+
+    public int getNumLabels() {
+        throw new NotImplementedException();
+    }
+
+    public void addMisclassified(CftInstance actual, String missClassified) {
+        throw new NotImplementedException();
     }
 }

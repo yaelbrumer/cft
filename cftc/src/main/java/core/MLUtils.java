@@ -1,5 +1,6 @@
 package core;
 
+import exceptions.NotImplementedException;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
@@ -53,19 +54,20 @@ public class MLUtils {
 
     public static HashSet<String> GetDistinctValues(TreeMap<Integer, String> yActualList) {
 
-        HashSet<String> distinctValues = new HashSet<>();
+        throw new NotImplementedException("take out lambda expressions");
+       /* HashSet<String> distinctValues = new HashSet<>();
 
         yActualList.entrySet().stream().collect(Collectors.groupingBy(
                 Map.Entry::getValue, Collectors.mapping(Map.Entry::getKey, Collectors.toList())))
                 .forEach((value,keys) -> distinctValues.add(value));
 
-        return distinctValues;
+        return distinctValues;*/
 
     }
 
     public static TreeMap<Integer, List<String>> CreatePredictedList(TreeMap<Integer, String> yActualList) {
 
-        TreeMap<Integer, List<String>> result = new TreeMap<>();
+        TreeMap<Integer, List<String>> result = new TreeMap<Integer, List<String>>();
 
         for(Map.Entry<Integer,String> entry: yActualList.entrySet())
         {
