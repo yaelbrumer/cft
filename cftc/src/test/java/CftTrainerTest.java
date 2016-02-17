@@ -14,7 +14,7 @@ public class CftTrainerTest {
     public void testTrain() throws Exception {
         CostCalculatorImpl costCalculator = new CostCalculatorImpl();
         MultiLabelDataset multiLabelDataset= readDataSet();
-        costCalculator.genereteHammingDistanceCosts(multiLabelDataset.getClasses());
+        //costCalculator.genereteHammingDistanceCosts(multiLabelDataset.getClasses());
     }
 
     private MultiLabelDataset readDataSet() throws Exception {

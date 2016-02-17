@@ -7,23 +7,49 @@ import weka.core.Instance;
 /**
  * Created by eyapeleg on 2/12/2016.
  */
-public class TreeClassifier {
+public final class TreeClassifier {
 
-    private CostClassifier costClassifier;
-    private TreeClassifier nextTreeClassifier;
+    private final CostClassifier costClassifier;
+    private final TreeClassifier prevTreeClassifier;
+    private final int level;
 
-    public Classification classify(CftInstance cftInstance) throws Exception {
+    //// constructors
+    public TreeClassifier(final CostClassifier costClassifier){
+        if (costClassifier==null)
+            throw new IllegalArgumentException("constructor values are null");
 
-        Instance instance = cftInstance.getInstance();
-        CftInstance cftInstance0;
-        CftInstance cftInstance1;
+        this.costClassifier=costClassifier;
+        this.prevTreeClassifier=null;
+        this.level=0;
+    }
 
-        Classification classification = costClassifier.classify(instance);
-/*        instance.insertAttributeAt(instance.numAttributes()+1); // todo - check if we want to modify instnace /make a copy
-        instance.setValue(instance.numAttributes(),(double)classification.getT()); //todo - check if casting is legal*/
-        if (nextTreeClassifier !=null)
-            return nextTreeClassifier.classify(instance);
+    public TreeClassifier(final CostClassifier costClassifier, final TreeClassifier prevTreeClassifier){
+        if (costClassifier==null || prevTreeClassifier==null)
+            throw new IllegalArgumentException("constructor values are null");
+
+        this.costClassifier=costClassifier;
+        this.prevTreeClassifier = prevTreeClassifier;
+        this.level = prevTreeClassifier.getLevel()+1;
+    }
+
+    //// accessors
+    public int getLevel(){
+        return level;
+    }
+
+    //// api
+    public String classify(final CftInstance cftInstance) throws Exception {
+        if (cftInstance==null)
+            throw new IllegalArgumentException("cftInstance is null");
+
+        CftInstance cftInstanceCopy = cftInstance.clone();
+        Instance instance = cftInstanceCopy.getInstance();
+        String classification = costClassifier.classify(instance);
+        cftInstanceCopy.updateT(classification);
+
+        if (prevTreeClassifier !=null)
+            return prevTreeClassifier.classify(cftInstanceCopy);
         else
-            return classification;
+            return cftInstanceCopy.getT();
     }
 }
