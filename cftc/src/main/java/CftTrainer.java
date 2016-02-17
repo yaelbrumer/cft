@@ -1,11 +1,10 @@
 import classifiers.Classification;
-import classifiers.LayerClassifier;
 import classifiers.TreeClassifier;
-import datasets.MultiLabelDataset;
+import datasets.CftInstance;
 import datasets.MultiLabelDatasetLayerK;
-import exceptions.NotImplementedException;
 import interfaces.CostCalculator;
-import interfaces.WeightedClassifier;
+import interfaces.CostClassifier;
+import weka.core.Instance;
 
 /**
  * Created by eyapeleg on 2/12/2016.
@@ -13,49 +12,48 @@ import interfaces.WeightedClassifier;
 public class CftTrainer {
 
     private int M;
-
-    private TreeClassifier treeClassifier;
-
     private CostCalculator costCalculator;
-    private WeightedClassifier weightedClassifier;
+    private CostClassifier costClassifier;
 
-    public CftTrainer(CostCalculator costCalculator, WeightedClassifier trainer, int M)
+    public CftTrainer(CostCalculator costCalculator, CostClassifier trainer, int M)
     {
         this.costCalculator = costCalculator;
-        this.weightedClassifier = trainer;
+        this.costClassifier = trainer;
         this.M = M;
     }
 
-    private MultiLabelDatasetLayerK dataPreparation(MultiLabelDataset dp)
-    {
-        throw new NotImplementedException();
-    }
 
-    private TreeClassifier createTreeClassifier(MultiLabelDataset MultiLabelDataset, int k)
+    private TreeClassifier buildTreeClassifier(MultiLabelDatasetLayerK dataset, TreeClassifier treeClassifier, int k)
     {
         for (int i = k; i > 0; i++)//todo - verify indexing
         {
-            MultiLabelDatasetLayerK multiLabelDatasetLayerK = dataPreparation(MultiLabelDataset);
-            LayerClassifier layerClassifier = weightedClassifier.train(multiLabelDatasetLayerK);
-            treeClassifier.addLayer(layerClassifier);
+            int j=1;
+            for(CftInstance cftInstance:dataset){
+                Instance instance = cftInstance.getInstance();
+                String yPredicted = cftInstance.getYPredicted();
+                String t = yPredicted.substring(0,yPredicted.length()-j); //todo - verify indexing
+                treeClassifier.classify(instance)
+                String t0;
+                String t1;
+                instance.setValue(9999,t); //set t, todo - replace 999 with the relevant attribute/index
+                j++;
+            }
         }
         return treeClassifier;
     }
 
-    private CftClassifier createCftClassifier(TreeClassifier treeClassifier)
-    {
-        throw new NotImplementedException();
-    }
-
-    public CftClassifier train(MultiLabelDataset dataset)
+    public CftClassifier train(MultiLabelDatasetLayerK dataset)
     {
         int k = dataset.getNumLabels();
+        TreeClassifier treeClassifier = new TreeClassifier();
+
         for (int i = 0; i<M; i++)
         {
-            this.treeClassifier = createTreeClassifier(dataset,k);
+            treeClassifier = buildTreeClassifier(dataset, treeClassifier, k);
             Classification classification = treeClassifier.classify(dataset);
             dataset.addClassificationToDataset(classification);
         }
-        return createCftClassifier(this.treeClassifier);
+
+        return new CftClassifier(treeClassifier);
     }
 }

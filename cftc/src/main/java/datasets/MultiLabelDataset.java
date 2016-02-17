@@ -14,39 +14,23 @@ import java.util.*;
 /**
  * Created by eyapeleg on 2/12/2016.
  */
-public class MultiLabelDataset {
-
-    public Instances getDataSet() {
-        return dataSet;
-    }
-
-    public void setDataSet(Instances dataSet) {
-        this.dataSet = dataSet;
-    }
-
-    public LabelsMetaData getLabelsMetaData() {
-        return labelsMetaData;
-    }
-
-    public String getLabel() {
-        return Label;
-    }
-
-    public void setLabel(String label) {
-        Label = label;
-    }
+public class MultiLabelDataset implements Iterable<CftInstance> {
 
     private Instances dataSet;
     private final LabelsMetaData labelsMetaData;
     private String Label;
+    private List<String> yPredictedList;
+    private List<String> yActualList;
+    private Set<String> classes; //todo - remove
 
     public Set<String> getClasses() {
         return classes;
     }
 
-    private Set<String> classes = new TreeSet<String>();
-
     public MultiLabelDataset(String arffFilePath, int numLabelAttributes) throws Exception {
+
+        classes = new TreeSet<String>();
+
         if(arffFilePath == null) {
             throw new ArgumentNullException("arffFilePath");
         } else if(numLabelAttributes < 2) {
@@ -78,14 +62,6 @@ public class MultiLabelDataset {
         }
 
         dataSet.setClassIndex(lastIndex);
-    }
-
-    public int getNumLabels() {
-        return this.labelsMetaData.getNumLabels();
-    }
-
-    public int getNumInstances() {
-        return this.dataSet.numInstances();
     }
 
     /**
@@ -132,6 +108,28 @@ public class MultiLabelDataset {
 
     public MultiLabelDataset addClassificationToDataset(Classification Classification)
     {
+        throw new NotImplementedException();
+    }
+
+    public Iterator<CftInstance> iterator(){
+        return new Iterator<CftInstance>() {
+
+            private int position = 0;
+
+            public boolean hasNext() {
+                return (dataSet.numInstances()>position);
+            } //todo - verify indexing
+
+            public CftInstance next() {
+                Instance instance = dataSet.instance(position);
+                String yPredicted = yPredictedList.get(position);
+                position++;
+                return new CftInstance(instance,yPredicted);
+            }
+        };
+    }
+
+    public void addClassificationToDataset(){
         throw new NotImplementedException();
     }
 }

@@ -1,9 +1,11 @@
 package impl;
 
+import exceptions.CostCalculatorException;
 import interfaces.CostCalculator;
+import weka.classifiers.CostMatrix;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -11,33 +13,57 @@ import java.util.TreeMap;
  */
 public class CostCalculatorImpl implements CostCalculator {
 
-    private Map<String,Map<String,Double>> costMatrix;
-
-
-    public void genereteHammingDistanceCosts(List<String> classes){
-        Map<String,Map<String,Double>> costMatrix = new TreeMap<String, Map<String, Double>>();
-        for (String c1: classes) {
-            Map<String,Double> costVector = new TreeMap<String, Double>();
-            for (String c2: classes) {
-                costVector.put(c2,getHammingDistance(c1,c2));
+    //private Map<String, Map<String, Double>> costMatrix;
+    private CostMatrix wekaCostMatrix;
+/*
+    public void genereteHammingDistanceCosts(Set<String> classes) {
+        Map<String, Map<String, Double>> costMatrix = new TreeMap<String, Map<String, Double>>();
+        for (String c1 : classes) {
+            Map<String, Double> costVector = new TreeMap<String, Double>();
+            for (String c2 : classes) {
+                costVector.put(c2, getHammingDistance(c1, c2));
             }
-            costMatrix.put(c1,costVector);
+            costMatrix.put(c1, costVector);
         }
-        this.costMatrix=costMatrix;
+        this.costMatrix = costMatrix;
+    }*/
+
+    public double getCost(String predicted, String actual) {
+/*
+        if (costMatrix == null) {
+            throw new CostCalculatorException("costMatrix wasn't initialized");
+*/
+
+        try {
+            return getHammingDistance(predicted,actual);
+        } catch (NullPointerException e) {
+            throw new CostCalculatorException("matrix does not contain on of the required class: " + predicted + "," + actual, e);
+        }
     }
 
     private double getHammingDistance(String sequence1, String sequence2) {
-        char[] s1 = sequence1.toCharArray();
-        char[] s2 = sequence2.toCharArray();
+        try {
+            if (sequence1.length() != sequence2.length()) {
+                throw new IllegalArgumentException("Strings length are not equal");
+            }
 
-        if(s1.length!= s2.length)
-            throw new IllegalArgumentException("Strings length are not equal");
+            char[] s1 = sequence1.toCharArray();
+            char[] s2 = sequence2.toCharArray();
 
-        int result = 0;
-        for (int i=0; i<s1.length; i++) {
-            if (s1[i] != s2[i]) result++;
+            int result = 0;
+            for (int i = 0; i < s1.length; i++) {
+                if (s1[i] != s2[i]) {
+                    result++;
+                }
+            }
+            return result / (double) s1.length;
+        } catch (Exception e) {
+            throw new CostCalculatorException(e);
         }
-        return result/s1.length;
+    }
+
+    public CostMatrix getWekaCostMatrix(){
+        return null;
     }
 
 }
