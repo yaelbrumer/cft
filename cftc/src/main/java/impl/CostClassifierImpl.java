@@ -1,6 +1,5 @@
 package impl;
 
-import classifiers.Classification;
 import exceptions.NotImplementedException;
 import interfaces.CostClassifier;
 import weka.classifiers.CostMatrix;
