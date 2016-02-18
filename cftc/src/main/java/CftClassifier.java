@@ -15,7 +15,7 @@ final public class CftClassifier {
     private final CostCalculator costCalculator;
     private final WeightedClassifier weightedClassifier;
 
-    private TreeClassifier treeClassifier;
+    private LayerClassifier layerClassifier;
     private CftDataReader cftDataReader;
 
     public CftClassifier(final CostCalculator costCalculator, final WeightedClassifier trainer, final int M) {
@@ -25,9 +25,9 @@ final public class CftClassifier {
         this.cftDataReader=new CftDataReader();
     }
 
-    private TreeClassifier buildTreeClassifier(final CftDataset dataset) throws Exception {
+    private LayerClassifier buildTreeClassifier(final CftDataset dataset) throws Exception {
 
-        TreeClassifier treeClassifier = new TreeClassifier(weightedClassifier);
+        LayerClassifier layerClassifier = new LayerClassifier(weightedClassifier);
         final int k = dataset.getNumOfLables();
 
         List<CftInstance> trainingSet;
@@ -39,8 +39,8 @@ final public class CftClassifier {
                 CftInstance cftInstance0 = cftInstanceParent.getLeftChild(); //todo- add a validation when it's allowed to take a child.
                 CftInstance cftInstance1 = cftInstanceParent.getRightChild();
 
-                String class0 = treeClassifier.classify(cftInstance0);
-                String class1 = treeClassifier.classify(cftInstance1);
+                String class0 = layerClassifier.classify(cftInstance0);
+                String class1 = layerClassifier.classify(cftInstance1);
 
                 Double costClass0 = costCalculator.getCost(class0, cftInstance.getYactual());
                 Double costClass1 = costCalculator.getCost(class1, cftInstance.getYactual());
@@ -49,10 +49,9 @@ final public class CftClassifier {
 
                 trainingSet.add(cftInstanceParent);
             }
-
-            treeClassifier = treeClassifier.train(trainingSet);
+            layerClassifier = layerClassifier.train(trainingSet);
         }
-        return treeClassifier;
+        return layerClassifier;
     }
 
     // API
@@ -64,22 +63,17 @@ final public class CftClassifier {
 
     final public void buildClassifier(final CftDataset dataset) throws Exception {
 
-        TreeClassifier treeClassifier=null;
-
         for (int i = 0; i < M; i++) {
-
-            treeClassifier = buildTreeClassifier(dataset);
+            this.layerClassifier = buildTreeClassifier(dataset);
 
             for (CftInstance cftInstance : dataset) {
                 CftInstance cftInstanceRoot = cftInstance.getRoot();
-                String classification = treeClassifier.classify(cftInstanceRoot);
+                String classification = layerClassifier.classify(cftInstanceRoot);
                 if (classification != cftInstanceRoot.getYactual()) {
                     dataset.addMisclassified(cftInstanceRoot, classification);
                 }
             }
         }
-
-        this.treeClassifier=treeClassifier;
     }
 
     public String classifyInstance(Instance instance){

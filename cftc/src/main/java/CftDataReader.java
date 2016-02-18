@@ -80,17 +80,22 @@ final class CftDataReader {
             throw new IllegalArgumentException("The number of label attributes must me at least 2 or higher.");
         } else {
 
+            // read data
             Instances data = loadInstances(arffFilePath);
+
+           // set t, b attributes
             Attribute tAttribute = new Attribute("t",(FastVector) null);
             Attribute bAttribute = new Attribute("b",(FastVector) null);
-            // tIndex=data.numAttributes();
-            //int bIndex=tIndex+1;
             data.insertAttributeAt(tAttribute,data.numAttributes());
             data.insertAttributeAt(bAttribute,data.numAttributes());
+            data.setClassIndex(data.numAttributes()-1);
+
+            // create actual and predicted lists
             TreeMap<Integer, String> yActualList = CreateLabelValue(data, numLabelAttributes);
             TreeMap<Integer, List<String>> yPredictedList = CreatePredictedList(yActualList);
             CreatePredictedList(yActualList);
 
+            // create a CftDataset
             return new CftDataset(numLabelAttributes, data, yPredictedList, yActualList);
         }
     }

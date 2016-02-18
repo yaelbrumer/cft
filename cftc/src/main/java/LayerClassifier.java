@@ -7,29 +7,29 @@ import java.util.List;
 /**
  * Created by eyapeleg on 2/12/2016.
  */
-final class TreeClassifier {
+final class LayerClassifier {
 
     private final WeightedClassifier weightedClassifier;
-    private final TreeClassifier prevTreeClassifier;
+    private final LayerClassifier prevLayerClassifier;
     private final int level;
 
     //// constructors
-    TreeClassifier(final WeightedClassifier weightedClassifier){
+    LayerClassifier(final WeightedClassifier weightedClassifier){
         if (weightedClassifier ==null)
             throw new IllegalArgumentException("constructor values are null");
 
         this.weightedClassifier = weightedClassifier;
-        this.prevTreeClassifier=null;
+        this.prevLayerClassifier =null;
         this.level=1;
     }
 
-    TreeClassifier(final WeightedClassifier weightedClassifier, final TreeClassifier prevTreeClassifier){
-        if (weightedClassifier ==null || prevTreeClassifier==null)
+    private LayerClassifier(final WeightedClassifier weightedClassifier, final LayerClassifier prevLayerClassifier){
+        if (weightedClassifier ==null || prevLayerClassifier ==null)
             throw new IllegalArgumentException("constructor values are null");
 
         this.weightedClassifier = weightedClassifier;
-        this.prevTreeClassifier = prevTreeClassifier;
-        this.level = prevTreeClassifier.level+1;
+        this.prevLayerClassifier = prevLayerClassifier;
+        this.level = prevLayerClassifier.level+1;
     }
 
     //// api
@@ -40,13 +40,13 @@ final class TreeClassifier {
         String classification = weightedClassifier.classify(cftInstance.getInstance());
         CftInstance prediction =  cftInstance.getPredictedChild(classification);
 
-        if (prevTreeClassifier !=null)
-            return prevTreeClassifier.classify(prediction);
+        if (prevLayerClassifier !=null)
+            return prevLayerClassifier.classify(prediction);
         else
             return prediction.getT();
     }
 
-    final TreeClassifier train(final List<CftInstance> trainingSet) throws Exception {
+    final LayerClassifier train(final List<CftInstance> trainingSet) throws Exception {
         if (trainingSet==null || trainingSet.size()==0)
             throw new IllegalArgumentException("training set must not be null or size 0");
 
@@ -56,6 +56,6 @@ final class TreeClassifier {
         Instances instances = trainingSet.get(0).getInstance().dataset();
         weightedClassifier.train(instances);
 
-        return new TreeClassifier(weightedClassifier,this);
+        return new LayerClassifier(weightedClassifier, this);
     }
 }

@@ -27,7 +27,7 @@ public class CftClassifierTest {
         CostCalculator costCalculator = new CostCalculatorImpl();
         WeightedClassifier weightedClassifier = new WeightedClassifierImpl();
         CftClassifier cftClassifier = new CftClassifier(costCalculator, weightedClassifier, 5);
-        cftClassifier.buildClassifier(cftDataset);
+        cftClassifier.buildClassifier(cftDataset); //todo - modify to use the other method with the file reading
     }
 
 }
