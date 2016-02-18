@@ -3,16 +3,13 @@ package datasets;
 import exceptions.NotImplementedException;
 import weka.core.Instance;
 
-/**
- * Created by eyapeleg on 2/14/2016.
- */
 public final class CftInstance implements Cloneable {
 
     private final Instance instance;
     private final String yPredicted;
     private final String yActual;
-    private final String t;
-    private String bn;
+    //private final String t;
+   // private String bn;
     private double wn;
 
     private static int tMax; //todo - implement
@@ -21,16 +18,16 @@ public final class CftInstance implements Cloneable {
         this.instance = instance;
         this.yPredicted = yPredicted;
         this.yActual = yActual;
-        this.t=yPredicted;
-        this.bn= ""; //todo - check what should be the initialization
+     //   this.t=yPredicted;
+     //   this.bn= ""; //todo - check what should be the initialization
     }
 
     private CftInstance(final Instance instance,final String yPredicted,final String yActual,final String t){
         this.instance = instance;
         this.yPredicted = yPredicted;
         this.yActual = yActual;
-        this.t=t;
-        this.bn= ""; //todo - check what should be the initialization
+      // this.t=t;
+      //  this.bn= ""; //todo - check what should be the initialization
     }
 
     public final Instance getInstance() {
@@ -41,7 +38,7 @@ public final class CftInstance implements Cloneable {
         return yActual;
     }
 
-    public final String getT() {
+  /*  public final String getT() {
         return t;
     }
 
@@ -56,33 +53,42 @@ public final class CftInstance implements Cloneable {
 
     public final CftInstance getRightChild(){
         return new CftInstance(instance,yPredicted,yActual,t+"1");
-    }
+    }*/
 
-    public final CftInstance getPredictedChild(String classification) {
+   /* public final CftInstance getPredictedChild(String classification) {
         if (classification=="0")
             return getLeftChild();
         else if (classification=="1")
             return getRightChild();
         else throw new IllegalArgumentException("classification must be either '0' or '1'");
-    }
+    }*/
 
 
     public final void setBn(final Double costClass0,final Double costClass1) {
-        bn = costClass0>costClass1?"1":"0";
+        throw new NotImplementedException();
+        //instance.setValue() //todo - implement
+        //bn = costClass0>costClass1?"1":"0";
     }
 
-    public final void setWn(final double cost){
-        wn=cost;
+    public final void setWn(final double weight){
+        instance.setWeight(weight);
     }
 
-    public final void updateDataValues() {
-        instance.setValue(-1,bn); //todo - values should be set to the coressponding index
-        instance.setValue(-1,t); //todo - values should be set to the coressponding index //todo - set t???
-        instance.setWeight(wn);
+    public void setTtoLevel(int level) {
+        throw new NotImplementedException();
+        //instance.setValue(); //todo - calculate t according to level
+        //this.t = t;
     }
 
-    public final CftInstance getRoot() {
+    /*public final CftInstance getRoot() {
         return new CftInstance(instance,yPredicted,yActual,t+"0");
+    */}
+
+    public void seTtoLeftChild() {
+        throw new NotImplementedException();
     }
 
+    public void seTtoRightChild() {
+        throw new NotImplementedException();
+    }
 }
