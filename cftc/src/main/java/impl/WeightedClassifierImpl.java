@@ -3,6 +3,7 @@ package impl;
 import exceptions.NotImplementedException;
 import interfaces.WeightedClassifier;
 
+import weka.classifiers.functions.LibSVM;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -12,11 +13,18 @@ import weka.core.Instances;
  */
 public final class WeightedClassifierImpl implements WeightedClassifier {
 
+    private final weka.classifiers.functions.LibSVM libSVM;
+
+    public WeightedClassifierImpl(){
+        libSVM = new LibSVM();
+    }
+
     public final void train(final Instances dataSet) throws Exception {
-        throw new NotImplementedException("convert the double result into a t0/t1");
+        libSVM.buildClassifier(dataSet);
     }
 
     public final String classify(final Instance instance) throws Exception {
-        throw new NotImplementedException("convert the double result into a t0/t1");
+        libSVM.classifyInstance(instance);
+        return new String(); //todo - modify prediction to fit classes
     }
 }
