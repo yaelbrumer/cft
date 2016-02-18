@@ -92,7 +92,7 @@ final class CftDataReader {
 
             // create actual and predicted lists
             TreeMap<Integer, String> yActualList = CreateLabelValue(data, numLabelAttributes);
-            TreeMap<Integer, List<String>> yPredictedList = CreatePredictedList(yActualList);
+            TreeMap<Integer, String> yPredictedList = (TreeMap<Integer, String>)yActualList.clone();
             CreatePredictedList(yActualList);
 
             // create a CftDataset

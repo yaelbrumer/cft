@@ -34,7 +34,6 @@ final public class CftClassifier {
         List<CftInstance> trainingSet;
         for (int level = k; level > 0; level--)//todo - verify indexing
         {
-            trainingSet = new ArrayList<CftInstance>();
             for (CftInstance cftInstance : dataset) { //todo - modify to have a single cftInstance where we always modifyT
 
                 cftInstance.setTtoLevel(level);
@@ -51,10 +50,9 @@ final public class CftClassifier {
                 cftInstance.setBn(costClass0, costClass1);
                 cftInstance.setWn(Math.abs(costClass0 - costClass1));
                 cftInstance.setTtoLevel(level);
-
-                trainingSet.add(cftInstance);
             }
-            layerClassifier = layerClassifier.train(trainingSet);
+
+            layerClassifier = layerClassifier.train(dataset);
         }
         return layerClassifier;
     }
@@ -72,7 +70,7 @@ final public class CftClassifier {
             this.layerClassifier = buildTreeClassifier(dataset);
 
             for (CftInstance cftInstance : dataset) {
-                cftInstance.setTtoLevel(0);
+                cftInstance.setTtoLevel(0); //todo - verify indexing
                 String classification = layerClassifier.classify(cftInstance);
                 if (classification != cftInstance.getYactual()) {
                     dataset.addMisclassified(cftInstance, classification);

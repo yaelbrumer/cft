@@ -1,3 +1,4 @@
+import datasets.CftDataset;
 import datasets.CftInstance;
 import datasets.Classification;
 import interfaces.WeightedClassifier;
@@ -51,13 +52,11 @@ final class LayerClassifier {
             return cftInstance.getT();
     }
 
-    final LayerClassifier train(final List<CftInstance> trainingSet) throws Exception {
-        if (trainingSet==null || trainingSet.size()==0)
-            throw new IllegalArgumentException("training set must not be null or size 0");
+    final LayerClassifier train(final CftDataset cftDataset) throws Exception {
+        if (cftDataset==null)
+            throw new IllegalArgumentException("training set must not be null!!");
 
-        Instances instances = trainingSet.get(0).getInstance().dataset();
-        weightedClassifier.train(instances);
-
+        weightedClassifier.train(cftDataset.getInstances());
         return new LayerClassifier(weightedClassifier, this);
     }
 }

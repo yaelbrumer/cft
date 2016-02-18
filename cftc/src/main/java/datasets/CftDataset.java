@@ -11,40 +11,33 @@ public class CftDataset implements Iterable<CftInstance> {
 
     private Instances dataSet;
     private int numOfLables;
-    private TreeMap<Integer, List<String>> yPredictedList;
+    private TreeMap<Integer, String> yPredictedList;
     private TreeMap<Integer, String> yActualList;
 
-    public CftDataset(final int numOfLables , Instances dataSet , TreeMap<Integer, List<String>> yPredictedList, TreeMap<Integer, String> yActualList) throws Exception {
+    public CftDataset(final int numOfLables , Instances dataSet , TreeMap<Integer, String> yPredictedList, TreeMap<Integer, String> yActualList) throws Exception {
 
         this.numOfLables = numOfLables;
         this.dataSet = dataSet;
         this.yActualList = yActualList;
         this.yPredictedList = yPredictedList;
-
     }
 
     public final Iterator<CftInstance> iterator(){
         return new Iterator<CftInstance>() {
 
             private int position = 0;
-            private int predictionPosition = 0;
 
             public boolean hasNext() {
-                return (yPredictedList.size() > position); //todo - verify indexing
+                return (yActualList.size() > position); //todo - verify indexing
             }
 
             public CftInstance next() {
 
                 Instance instance = dataSet.instance(position);
-                String prediction = yPredictedList.get(position).get(predictionPosition);
+                String prediction = yPredictedList.get(position);
                 String actual = yActualList.get(position);
-                predictionPosition++;
 
-                if(!(yPredictedList.get(position).size() > predictionPosition)){
-                    predictionPosition=0;
-                    position++;
-                }
-
+                position++;
                 return new CftInstance(instance,prediction,actual);
             }
         };
@@ -54,7 +47,10 @@ public class CftDataset implements Iterable<CftInstance> {
         return numOfLables;
     }
 
-    public void addMisclassified(CftInstance actual, String missClassified) {
+    public final Instances getInstances(){
+        return dataSet;
+    }
+    public final void addMisclassified(CftInstance actual, String missClassified) {
         throw new NotImplementedException();
     }
 }
