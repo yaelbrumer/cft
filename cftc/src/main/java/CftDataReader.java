@@ -1,5 +1,7 @@
 import datasets.MultiLabelDataset;
 import mulan.core.ArgumentNullException;
+import weka.core.Attribute;
+import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
@@ -79,6 +81,12 @@ public final class CftDataReader {
         } else {
 
             Instances data = loadInstances(arffFilePath);
+            Attribute tAttribute = new Attribute("t",(FastVector) null);
+            Attribute bAttribute = new Attribute("b",(FastVector) null);
+            // tIndex=data.numAttributes();
+            //int bIndex=tIndex+1;
+            data.insertAttributeAt(tAttribute,data.numAttributes());
+            data.insertAttributeAt(bAttribute,data.numAttributes());
             TreeMap<Integer, String> yActualList = CreateLabelValue(data, numLabelAttributes);
             TreeMap<Integer, List<String>> yPredictedList = CreatePredictedList(yActualList);
             CreatePredictedList(yActualList);
