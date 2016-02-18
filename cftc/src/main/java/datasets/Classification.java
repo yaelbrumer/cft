@@ -7,4 +7,5 @@ public final class Classification {
 
     public static final String LEFT_CHILD = "0";
     public static final String RIGHT_CHILD= "1";
+    public static final String NONE = "-1";
 }

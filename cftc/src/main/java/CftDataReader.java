@@ -30,18 +30,6 @@ final class CftDataReader {
 
     }
 
-    private final TreeMap<Integer, List<String>> CreatePredictedList(TreeMap<Integer, String> yActualList) {
-
-        TreeMap<Integer, List<String>> result = new TreeMap<Integer, List<String>>();
-
-        for(Map.Entry<Integer,String> entry: yActualList.entrySet())
-        {
-            result.put(entry.getKey(), Arrays.asList(entry.getValue()));
-        }
-        return result;
-    }
-
-
     private String toBitString(final Instance x,final int L) {
         StringBuilder sb = new StringBuilder(L);
         int numOfAtt = x.numAttributes();
@@ -61,16 +49,6 @@ final class CftDataReader {
     }
 
 
-    //todo - check if required...
-    private Instances LoadData(String resourceName) throws Exception {
-
-        String filePath = CftDataReader.class.getClassLoader().getResource(resourceName).getPath();
-        ConverterUtils.DataSource source = new ConverterUtils.DataSource(filePath);
-        Instances data = source.getDataSet();
-
-        return data;
-    }
-
     /// API
     final CftDataset readData(final String arffFilePath, final int numLabelAttributes) throws Exception {
 
@@ -86,7 +64,7 @@ final class CftDataReader {
             // create actual and predicted lists
             TreeMap<Integer, String> yActualList = CreateLabelValue(data, numLabelAttributes);
             TreeMap<Integer, String> yPredictedList = (TreeMap<Integer, String>)yActualList.clone();
-            CreatePredictedList(yActualList);
+
 
             //remove lables
             for(int i=0; i<numLabelAttributes;i++){

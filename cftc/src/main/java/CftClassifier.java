@@ -6,8 +6,6 @@ import interfaces.CostCalculator;
 import interfaces.WeightedClassifier;
 import weka.core.Instance;
 
-import java.util.List;
-
 final public class CftClassifier {
 
     private final int M;
@@ -30,9 +28,9 @@ final public class CftClassifier {
         LayerClassifier layerClassifier = new LayerClassifier(weightedClassifier);
         final int k = dataset.getNumOfLables();
 
-        for (int level = k; level > 0; level--)//todo - verify indexing
+        for (int level = k; level > 0; level--)
         {
-            for (CftInstance cftInstance : dataset) { //todo - modify to have a single cftInstance where we always modifyT
+            for (CftInstance cftInstance : dataset) {
 
                 cftInstance.setTtoLevel(level);
                 cftInstance.setTtoLeftChild();
@@ -63,7 +61,7 @@ final public class CftClassifier {
 
     }
 
-    final public void buildClassifier(final CftDataset dataset) throws Exception {
+    private void buildClassifier(final CftDataset dataset) throws Exception {
 
         for (int i = 0; i < M; i++) {
             this.layerClassifier = buildTreeClassifier(dataset);

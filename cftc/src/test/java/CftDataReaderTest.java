@@ -10,8 +10,8 @@ public class CftDataReaderTest {
     public void testLoadData() throws Exception {
         final CftDataReader cftDataReader = new CftDataReader();
         final int numOfLables = 6;
-
         final String filePath = CftDataReader.class.getClassLoader().getResource("emotions.arff").getPath();
+
         final CftDataset cftDataset = cftDataReader.readData(filePath, numOfLables);
     }
 }

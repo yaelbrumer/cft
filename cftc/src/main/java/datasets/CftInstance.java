@@ -19,12 +19,12 @@ public final class CftInstance implements Cloneable {
         this.bIndex=instance.numAttributes()-1;
 
         instance.setValue(tIndex,yPredicted);
-        instance.setValue(bIndex,"-1");
+        instance.setValue(bIndex,Classification.NONE);
     }
 
 
     public final Instance getInstance() {
-        return instance; //todo - first update instance fields to match t
+        return instance;
     }
 
     public final String getYactual() {
@@ -49,12 +49,12 @@ public final class CftInstance implements Cloneable {
         return instance.stringValue(tIndex);
     }
     public final void setTtoLeftChild() {
-        String t = getT()+"0";
+        String t = getT()+Classification.LEFT_CHILD;
         instance.setValue(tIndex,t);
     }
 
     public final void setTtoRightChild() {
-        String t = getT()+"1";
+        String t = getT()+Classification.RIGHT_CHILD;
         instance.setValue(tIndex,t);
     }
 }

@@ -11,23 +11,16 @@ import org.junit.Test;
  */
 public class CftClassifierTest {
 
-    static CftDataset cftDataset;
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-        final CftDataReader cftDataReader = new CftDataReader();
-        final int numOfLables = 6;
-
-        final String filePath = CftDataReader.class.getClassLoader().getResource("emotions.arff").getPath();
-        cftDataset = cftDataReader.readData(filePath, numOfLables);
-    }
-
     @Test
     public void testTrain() throws Exception {
         CostCalculator costCalculator = new CostCalculatorImpl();
         WeightedClassifier weightedClassifier = new WeightedClassifierImpl();
         CftClassifier cftClassifier = new CftClassifier(costCalculator, weightedClassifier, 5);
-        cftClassifier.buildClassifier(cftDataset); //todo - modify to use the other method with the file reading
+
+        final int numOfLables = 6;
+        final String filePath = CftClassifier.class.getClassLoader().getResource("emotions.arff").getPath();
+
+        cftClassifier.buildClassifier(filePath,6);
     }
 
 }
