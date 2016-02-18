@@ -83,17 +83,22 @@ final class CftDataReader {
             // read data
             Instances data = loadInstances(arffFilePath);
 
-           // set t, b attributes
+            // create actual and predicted lists
+            TreeMap<Integer, String> yActualList = CreateLabelValue(data, numLabelAttributes);
+            TreeMap<Integer, String> yPredictedList = (TreeMap<Integer, String>)yActualList.clone();
+            CreatePredictedList(yActualList);
+
+            //remove lables
+            for(int i=0; i<numLabelAttributes;i++){
+                data.deleteAttributeAt(data.numAttributes()-1);
+            }
+
+            // set t, b attributes
             Attribute tAttribute = new Attribute("t",(FastVector) null);
             Attribute bAttribute = new Attribute("b",(FastVector) null);
             data.insertAttributeAt(tAttribute,data.numAttributes());
             data.insertAttributeAt(bAttribute,data.numAttributes());
             data.setClassIndex(data.numAttributes()-1);
-
-            // create actual and predicted lists
-            TreeMap<Integer, String> yActualList = CreateLabelValue(data, numLabelAttributes);
-            TreeMap<Integer, String> yPredictedList = (TreeMap<Integer, String>)yActualList.clone();
-            CreatePredictedList(yActualList);
 
             // create a CftDataset
             return new CftDataset(numLabelAttributes, data, yPredictedList, yActualList);

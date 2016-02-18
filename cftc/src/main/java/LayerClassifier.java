@@ -2,9 +2,6 @@ import datasets.CftDataset;
 import datasets.CftInstance;
 import datasets.Classification;
 import interfaces.WeightedClassifier;
-import weka.core.Instances;
-
-import java.util.List;
 
 /**
  * Created by eyapeleg on 2/12/2016.
@@ -42,9 +39,9 @@ final class LayerClassifier {
         String classification = weightedClassifier.classify(cftInstance.getInstance());
 
         if (classification== Classification.LEFT_CHILD)
-            cftInstance.seTtoLeftChild();
+            cftInstance.setTtoLeftChild();
         else if (classification==Classification.RIGHT_CHILD)
-            cftInstance.seTtoRightChild();
+            cftInstance.setTtoRightChild();
 
         if (prevLayerClassifier !=null)
             return prevLayerClassifier.classify(cftInstance);

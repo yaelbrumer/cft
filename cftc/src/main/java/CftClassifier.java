@@ -6,7 +6,6 @@ import interfaces.CostCalculator;
 import interfaces.WeightedClassifier;
 import weka.core.Instance;
 
-import java.util.ArrayList;
 import java.util.List;
 
 final public class CftClassifier {
@@ -31,23 +30,23 @@ final public class CftClassifier {
         LayerClassifier layerClassifier = new LayerClassifier(weightedClassifier);
         final int k = dataset.getNumOfLables();
 
-        List<CftInstance> trainingSet;
         for (int level = k; level > 0; level--)//todo - verify indexing
         {
             for (CftInstance cftInstance : dataset) { //todo - modify to have a single cftInstance where we always modifyT
 
                 cftInstance.setTtoLevel(level);
-                cftInstance.seTtoLeftChild();
+                cftInstance.setTtoLeftChild();
                 String class0 = (level==k)?cftInstance.getT():layerClassifier.classify(cftInstance);
 
                 cftInstance.setTtoLevel(level);
-                cftInstance.seTtoRightChild();
+                cftInstance.setTtoRightChild();
                 String class1 = (level==k)?cftInstance.getT():layerClassifier.classify(cftInstance);
 
                 Double costClass0 = costCalculator.getCost(class0, cftInstance.getYactual());
                 Double costClass1 = costCalculator.getCost(class1, cftInstance.getYactual());
 
-                cftInstance.setBn(costClass0, costClass1);
+                String b = (costClass0<costClass1)? Classification.LEFT_CHILD:Classification.RIGHT_CHILD;
+                cftInstance.setBn(b);
                 cftInstance.setWn(Math.abs(costClass0 - costClass1));
                 cftInstance.setTtoLevel(level);
             }
