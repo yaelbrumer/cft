@@ -1,4 +1,3 @@
-import classifiers.TreeClassifier;
 import datasets.MultiLabelDataset;
 import exceptions.NotImplementedException;
 

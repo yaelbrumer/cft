@@ -1,8 +1,5 @@
-package classifiers;
-
 import datasets.CftInstance;
 import interfaces.WeightedClassifier;
-import weka.classifiers.CostMatrix;
 import weka.core.Instances;
 
 import java.util.List;
@@ -10,7 +7,7 @@ import java.util.List;
 /**
  * Created by eyapeleg on 2/12/2016.
  */
-public final class TreeClassifier {
+final class TreeClassifier {
 
     private final WeightedClassifier weightedClassifier;
     private final TreeClassifier prevTreeClassifier;
