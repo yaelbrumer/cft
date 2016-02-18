@@ -1,5 +1,6 @@
 import datasets.CftInstance;
 import datasets.CftDataset;
+import datasets.Classification;
 import exceptions.NotImplementedException;
 import interfaces.CostCalculator;
 import interfaces.WeightedClassifier;
@@ -31,18 +32,18 @@ final public class CftClassifier {
         final int k = dataset.getNumOfLables();
 
         List<CftInstance> trainingSet;
-        for (int level = k; level > 0; level++)//todo - verify indexing
+        for (int level = k; level > 0; level--)//todo - verify indexing
         {
             trainingSet = new ArrayList<CftInstance>();
             for (CftInstance cftInstance : dataset) { //todo - modify to have a single cftInstance where we always modifyT
 
                 cftInstance.setTtoLevel(level);
                 cftInstance.seTtoLeftChild();
-                String class0 = layerClassifier.classify(cftInstance);
+                String class0 = (level==k)?cftInstance.getT():layerClassifier.classify(cftInstance);
 
                 cftInstance.setTtoLevel(level);
                 cftInstance.seTtoRightChild();
-                String class1 = layerClassifier.classify(cftInstance);
+                String class1 = (level==k)?cftInstance.getT():layerClassifier.classify(cftInstance);
 
                 Double costClass0 = costCalculator.getCost(class0, cftInstance.getYactual());
                 Double costClass1 = costCalculator.getCost(class1, cftInstance.getYactual());

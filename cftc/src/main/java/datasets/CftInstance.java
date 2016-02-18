@@ -74,21 +74,25 @@ public final class CftInstance implements Cloneable {
         instance.setWeight(weight);
     }
 
-    public void setTtoLevel(int level) {
+    public final void setTtoLevel(final int level) {
         throw new NotImplementedException();
         //instance.setValue(); //todo - calculate t according to level
         //this.t = t;
     }
 
     /*public final CftInstance getRoot() {
-        return new CftInstance(instance,yPredicted,yActual,t+"0");
-    */}
+        return new CftInstance(instance,yPredicted,yActual,t+"0");}
+    */
 
-    public void seTtoLeftChild() {
+    public final void seTtoLeftChild() {
         throw new NotImplementedException();
     }
 
-    public void seTtoRightChild() {
+    public final void seTtoRightChild() {
+        throw new NotImplementedException();
+    }
+
+    public String getT() {
         throw new NotImplementedException();
     }
 }

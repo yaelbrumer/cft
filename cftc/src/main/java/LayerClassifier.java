@@ -1,4 +1,5 @@
 import datasets.CftInstance;
+import datasets.Classification;
 import interfaces.WeightedClassifier;
 import weka.core.Instances;
 
@@ -11,7 +12,7 @@ final class LayerClassifier {
 
     private final WeightedClassifier weightedClassifier;
     private final LayerClassifier prevLayerClassifier;
-    private final int level;
+    //private final int level;
 
     //// constructors
     LayerClassifier(final WeightedClassifier weightedClassifier){
@@ -20,7 +21,7 @@ final class LayerClassifier {
 
         this.weightedClassifier = weightedClassifier;
         this.prevLayerClassifier =null;
-        this.level=1;
+       //this.level=1;
     }
 
     private LayerClassifier(final WeightedClassifier weightedClassifier, final LayerClassifier prevLayerClassifier){
@@ -29,7 +30,7 @@ final class LayerClassifier {
 
         this.weightedClassifier = weightedClassifier;
         this.prevLayerClassifier = prevLayerClassifier;
-        this.level = prevLayerClassifier.level+1;
+      //  this.level = prevLayerClassifier.level+1;
     }
 
     //// api
@@ -38,21 +39,22 @@ final class LayerClassifier {
             throw new IllegalArgumentException("cftInstance is null");
 
         String classification = weightedClassifier.classify(cftInstance.getInstance());
-        CftInstance prediction =  cftInstance.getPredictedChild(classification);
+
+        if (classification== Classification.LEFT_CHILD)
+            cftInstance.seTtoLeftChild();
+        else if (classification==Classification.RIGHT_CHILD)
+            cftInstance.seTtoRightChild();
 
         if (prevLayerClassifier !=null)
-            return prevLayerClassifier.classify(prediction);
+            return prevLayerClassifier.classify(cftInstance);
         else
-            return prediction.getT();
+            return cftInstance.getT();
     }
 
     final LayerClassifier train(final List<CftInstance> trainingSet) throws Exception {
         if (trainingSet==null || trainingSet.size()==0)
             throw new IllegalArgumentException("training set must not be null or size 0");
 
-        for(CftInstance cftInstance: trainingSet){
-            cftInstance.updateDataValues();
-        }
         Instances instances = trainingSet.get(0).getInstance().dataset();
         weightedClassifier.train(instances);
 
