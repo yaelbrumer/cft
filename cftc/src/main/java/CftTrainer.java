@@ -1,4 +1,3 @@
-import classifiers.TreeClassifier;
 import datasets.CftInstance;
 import datasets.MultiLabelDataset;
 import interfaces.CostCalculator;
@@ -21,7 +20,6 @@ final public class CftTrainer {
         this.M = M;
     }
 
-
     private TreeClassifier buildTreeClassifier(final MultiLabelDataset dataset) throws Exception {
 
         TreeClassifier treeClassifier = new TreeClassifier(weightedClassifier);
@@ -31,7 +29,7 @@ final public class CftTrainer {
         for (int i = k; i > 0; i++)//todo - verify indexing
         {
             trainingSet = new ArrayList<CftInstance>();
-            for (CftInstance cftInstance : dataset) {
+            for (CftInstance cftInstance : dataset) { //todo - modify to have a single cftInstance where we always modifyT
                 CftInstance cftInstanceParent = cftInstance.getParent(); //todo- add a validation when it's allowed to take a parent.
                 CftInstance cftInstance0 = cftInstanceParent.getLeftChild(); //todo- add a validation when it's allowed to take a child.
                 CftInstance cftInstance1 = cftInstanceParent.getRightChild();
@@ -52,7 +50,7 @@ final public class CftTrainer {
         return treeClassifier;
     }
 
-    final public CftClassifier train(final MultiLabelDataset dataset) throws Exception {
+    final public CftClassifier buildClassifier(final MultiLabelDataset dataset) throws Exception {
 
         TreeClassifier treeClassifier = null;
 
@@ -71,4 +69,7 @@ final public class CftTrainer {
 
         return new CftClassifier(treeClassifier);
     }
+
+    //final public void readData() //todo- implement
+
 }

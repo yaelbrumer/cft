@@ -27,7 +27,7 @@ public class CftTrainerTest {
         CostCalculator costCalculator = new CostCalculatorImpl();
         WeightedClassifier weightedClassifier = new WeightedClassifierImpl();
         CftTrainer cftTrainer = new CftTrainer(costCalculator, weightedClassifier,5);
-        cftTrainer.train(multiLabelDataset);
+        cftTrainer.buildClassifier(multiLabelDataset);
     }
 
 }
