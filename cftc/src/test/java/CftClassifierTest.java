@@ -1,4 +1,4 @@
-import datasets.MultiLabelDataset;
+import datasets.CftDataset;
 import impl.CostCalculatorImpl;
 import impl.WeightedClassifierImpl;
 import interfaces.CostCalculator;
@@ -9,9 +9,9 @@ import org.junit.Test;
 /**
  * Created by eyapeleg on 2/13/2016.
  */
-public class CftTrainerTest {
+public class CftClassifierTest {
 
-    static MultiLabelDataset multiLabelDataset;
+    static CftDataset cftDataset;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -19,15 +19,15 @@ public class CftTrainerTest {
         final int numOfLables = 6;
 
         final String filePath = CftDataReader.class.getClassLoader().getResource("emotions.arff").getPath();
-        multiLabelDataset = cftDataReader.readData(filePath,numOfLables);
+        cftDataset = cftDataReader.readData(filePath, numOfLables);
     }
 
     @Test
     public void testTrain() throws Exception {
         CostCalculator costCalculator = new CostCalculatorImpl();
         WeightedClassifier weightedClassifier = new WeightedClassifierImpl();
-        CftTrainer cftTrainer = new CftTrainer(costCalculator, weightedClassifier,5);
-        cftTrainer.buildClassifier(multiLabelDataset);
+        CftClassifier cftClassifier = new CftClassifier(costCalculator, weightedClassifier, 5);
+        cftClassifier.buildClassifier(cftDataset);
     }
 
 }

@@ -1,4 +1,4 @@
-import datasets.MultiLabelDataset;
+import datasets.CftDataset;
 import mulan.core.ArgumentNullException;
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -14,7 +14,7 @@ import java.util.TreeMap;
 /**
  * Created by eyapeleg on 2/17/2016.
  */
-public final class CftDataReader {
+final class CftDataReader {
 
     private final TreeMap<Integer,String> CreateLabelValue(final Instances dataSet, int L) {
 
@@ -62,7 +62,7 @@ public final class CftDataReader {
 
 
     //todo - check if required...
-    private  Instances LoadData(String resourceName) throws Exception {
+    private Instances LoadData(String resourceName) throws Exception {
 
         String filePath = CftDataReader.class.getClassLoader().getResource(resourceName).getPath();
         ConverterUtils.DataSource source = new ConverterUtils.DataSource(filePath);
@@ -72,7 +72,7 @@ public final class CftDataReader {
     }
 
     /// API
-    public final MultiLabelDataset readData(final String arffFilePath,final int numLabelAttributes) throws Exception {
+    final CftDataset readData(final String arffFilePath, final int numLabelAttributes) throws Exception {
 
         if (arffFilePath == null) {
             throw new ArgumentNullException("arffFilePath");
@@ -91,7 +91,7 @@ public final class CftDataReader {
             TreeMap<Integer, List<String>> yPredictedList = CreatePredictedList(yActualList);
             CreatePredictedList(yActualList);
 
-            return new MultiLabelDataset(numLabelAttributes, data, yPredictedList, yActualList);
+            return new CftDataset(numLabelAttributes, data, yPredictedList, yActualList);
         }
     }
 

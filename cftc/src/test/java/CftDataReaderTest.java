@@ -1,7 +1,5 @@
-import datasets.MultiLabelDataset;
+import datasets.CftDataset;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by eyapeleg on 2/17/2016.
@@ -14,6 +12,6 @@ public class CftDataReaderTest {
         final int numOfLables = 6;
 
         final String filePath = CftDataReader.class.getClassLoader().getResource("emotions.arff").getPath();
-        final MultiLabelDataset multiLabelDataset = cftDataReader.readData(filePath,numOfLables);
+        final CftDataset cftDataset = cftDataReader.readData(filePath, numOfLables);
     }
 }

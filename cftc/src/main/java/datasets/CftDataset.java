@@ -7,14 +7,14 @@ import java.util.*;
 /**
  * Created by eyapeleg on 2/12/2016.
  */
-public class MultiLabelDataset implements Iterable<CftInstance> {
+public class CftDataset implements Iterable<CftInstance> {
 
     private Instances dataSet;
     private int numOfLables;
     private TreeMap<Integer, List<String>> yPredictedList;
     private TreeMap<Integer, String> yActualList;
 
-    public MultiLabelDataset(final int numOfLables , Instances dataSet ,TreeMap<Integer, List<String>> yPredictedList,TreeMap<Integer, String> yActualList) throws Exception {
+    public CftDataset(final int numOfLables , Instances dataSet , TreeMap<Integer, List<String>> yPredictedList, TreeMap<Integer, String> yActualList) throws Exception {
 
         this.numOfLables = numOfLables;
         this.dataSet = dataSet;

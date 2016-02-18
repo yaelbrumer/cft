@@ -14,7 +14,7 @@ final class TreeClassifier {
     private final int level;
 
     //// constructors
-    public TreeClassifier(final WeightedClassifier weightedClassifier){
+    TreeClassifier(final WeightedClassifier weightedClassifier){
         if (weightedClassifier ==null)
             throw new IllegalArgumentException("constructor values are null");
 
@@ -23,7 +23,7 @@ final class TreeClassifier {
         this.level=1;
     }
 
-    public TreeClassifier(final WeightedClassifier weightedClassifier, final TreeClassifier prevTreeClassifier){
+    TreeClassifier(final WeightedClassifier weightedClassifier, final TreeClassifier prevTreeClassifier){
         if (weightedClassifier ==null || prevTreeClassifier==null)
             throw new IllegalArgumentException("constructor values are null");
 
@@ -33,7 +33,7 @@ final class TreeClassifier {
     }
 
     //// api
-    public final String classify(final CftInstance cftInstance) throws Exception {
+    final String classify(final CftInstance cftInstance) throws Exception {
         if (cftInstance==null)
             throw new IllegalArgumentException("cftInstance is null");
 
@@ -46,7 +46,7 @@ final class TreeClassifier {
             return prediction.getT();
     }
 
-    public final TreeClassifier train(final List<CftInstance> trainingSet) throws Exception {
+    final TreeClassifier train(final List<CftInstance> trainingSet) throws Exception {
         if (trainingSet==null || trainingSet.size()==0)
             throw new IllegalArgumentException("training set must not be null or size 0");
 
