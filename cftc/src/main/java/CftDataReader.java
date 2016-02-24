@@ -1,4 +1,5 @@
 import datasets.CftDataset;
+import datasets.Classification;
 import mulan.core.ArgumentNullException;
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -71,12 +72,27 @@ final class CftDataReader {
                 data.deleteAttributeAt(data.numAttributes()-1);
             }
 
-            // set t, b attributes
-            Attribute tAttribute = new Attribute("t",(FastVector) null);
-            Attribute bAttribute = new Attribute("b",(FastVector) null);
-            data.insertAttributeAt(tAttribute,data.numAttributes());
-            data.insertAttributeAt(bAttribute,data.numAttributes());
-            data.setClassIndex(data.numAttributes()-1);
+            // set t attribute
+            FastVector tValues = new FastVector();
+            String str;
+            for (int i = 0; i < Math.pow(2,numLabelAttributes); i++) {
+                str = Integer.toBinaryString(i);
+//                int len = str.length();
+//                for (int j = 0; j < numLabelAttributes- len; j++) {
+//                    str = "0" + str;
+//                }
+                tValues.addElement(str);
+            }
+
+            data.insertAttributeAt(new Attribute("t", tValues), data.numAttributes());
+
+
+            // set b attribute
+            FastVector bValues = new FastVector();
+            bValues.addElement(Classification.RIGHT_CHILD);
+            bValues.addElement(Classification.LEFT_CHILD);
+            bValues.addElement(Classification.NONE);
+            data.insertAttributeAt(new Attribute("b", bValues), data.numAttributes());
 
             // create a CftDataset
             return new CftDataset(numLabelAttributes, data, yPredictedList, yActualList);

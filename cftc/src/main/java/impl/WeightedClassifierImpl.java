@@ -2,7 +2,7 @@ package impl;
 
 import exceptions.NotImplementedException;
 import interfaces.WeightedClassifier;
-
+import weka.classifiers.trees.J48;
 import weka.classifiers.functions.LibSVM;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -13,18 +13,22 @@ import weka.core.Instances;
  */
 public final class WeightedClassifierImpl implements WeightedClassifier {
 
-    private final weka.classifiers.functions.LibSVM libSVM;
+    //private final weka.classifiers.functions.LibSVM libSVM;
+    private final weka.classifiers.trees.J48 classifier;
 
     public WeightedClassifierImpl(){
-        libSVM = new LibSVM();
+        //libSVM = new LibSVM();
+        classifier = new weka.classifiers.trees.J48();
     }
 
     public final void train(final Instances dataSet) throws Exception {
-        libSVM.buildClassifier(dataSet);
+        //libSVM.buildClassifier(dataSet);
+        classifier.buildClassifier(dataSet);
     }
 
     public final String classify(final Instance instance) throws Exception {
-        libSVM.classifyInstance(instance);
+        //libSVM.classifyInstance(instance);
+        classifier.classifyInstance(instance);
         return new String(); //todo - modify prediction to fit classes
     }
 }

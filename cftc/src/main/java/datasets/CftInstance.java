@@ -41,7 +41,7 @@ public final class CftInstance implements Cloneable {
 
     public final void setTtoLevel(final int level) {
 
-        String t = yPredicted.substring(0,yPredicted.length()-level);
+        String t = yPredicted.substring(0,yPredicted.length()-level - 1);
         instance.setValue(tIndex,t);
     }
 

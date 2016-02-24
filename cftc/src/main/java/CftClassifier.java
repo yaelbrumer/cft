@@ -32,11 +32,11 @@ final public class CftClassifier {
         {
             for (CftInstance cftInstance : dataset) {
 
-                cftInstance.setTtoLevel(level);
+                cftInstance.setTtoLevel(k - level);
                 cftInstance.setTtoLeftChild();
                 String class0 = (level==k)?cftInstance.getT():layerClassifier.classify(cftInstance);
 
-                cftInstance.setTtoLevel(level);
+                cftInstance.setTtoLevel(k - level);
                 cftInstance.setTtoRightChild();
                 String class1 = (level==k)?cftInstance.getT():layerClassifier.classify(cftInstance);
 
@@ -46,7 +46,7 @@ final public class CftClassifier {
                 String b = (costClass0<costClass1)? Classification.LEFT_CHILD:Classification.RIGHT_CHILD;
                 cftInstance.setBn(b);
                 cftInstance.setWn(Math.abs(costClass0 - costClass1));
-                cftInstance.setTtoLevel(level);
+                cftInstance.setTtoLevel(k - level);
             }
 
             layerClassifier = layerClassifier.train(dataset);
@@ -76,7 +76,9 @@ final public class CftClassifier {
         }
     }
 
-    public String classifyInstance(Instance instance){
-        throw new NotImplementedException();
+    public String classifyInstance(Instance instance) throws Exception {
+        final String classify = weightedClassifier.classify(instance);
+        return classify;
+        //throw new NotImplementedException();
     }
 }
