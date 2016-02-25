@@ -74,16 +74,7 @@ final class CftDataReader {
 
             // set t attribute
             FastVector tValues = new FastVector();
-            String str;
-            for (int i = 0; i < Math.pow(2,numLabelAttributes); i++) {
-                str = Integer.toBinaryString(i);
-//                int len = str.length();
-//                for (int j = 0; j < numLabelAttributes- len; j++) {
-//                    str = "0" + str;
-//                }
-                tValues.addElement(str);
-            }
-
+            generateTvalues(tValues,"",0,numLabelAttributes);
             data.insertAttributeAt(new Attribute("t", tValues), data.numAttributes());
 
 
@@ -98,6 +89,15 @@ final class CftDataReader {
             return new CftDataset(numLabelAttributes, data, yPredictedList, yActualList);
         }
     }
+
+    private void generateTvalues(FastVector vector, String t,int i, int k){
+        vector.addElement(t);
+        if (!(i<k-1))
+            return;
+        generateTvalues(vector,t+Classification.LEFT_CHILD,i+1,k);
+        generateTvalues(vector,t+Classification.RIGHT_CHILD,i+1,k);
+    }
+
 
 }
 

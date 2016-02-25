@@ -18,7 +18,7 @@ public final class CftInstance implements Cloneable {
         this.tIndex=instance.numAttributes()-2;
         this.bIndex=instance.numAttributes()-1;
 
-        instance.setValue(tIndex,yPredicted);
+        instance.setValue(tIndex,"");
         instance.setValue(bIndex,Classification.NONE);
     }
 

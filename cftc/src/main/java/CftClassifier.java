@@ -33,6 +33,7 @@ final public class CftClassifier {
             for (CftInstance cftInstance : dataset) {
 
                 cftInstance.setTtoLevel(k - level);
+
                 cftInstance.setTtoLeftChild();
                 String class0 = (level==k)?cftInstance.getT():layerClassifier.classify(cftInstance);
 
