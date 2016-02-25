@@ -31,15 +31,31 @@ final public class CftClassifier {
         for (int level = k; level > 0; level--)
         {
             for (CftInstance cftInstance : dataset) {
+                String class0;
+                String class1;
 
                 cftInstance.setTtoLevel(k - level);
 
-                cftInstance.setTtoLeftChild();
-                String class0 = (level==k)?cftInstance.getT():layerClassifier.classify(cftInstance);
+                if(level != k)
+                {
+                    cftInstance.setTtoLeftChild();
+                    class0 = layerClassifier.classify(cftInstance);
+                }
+                else
+                {
+                    class0 = cftInstance.getT() + Classification.LEFT_CHILD;
+                }
 
                 cftInstance.setTtoLevel(k - level);
-                cftInstance.setTtoRightChild();
-                String class1 = (level==k)?cftInstance.getT():layerClassifier.classify(cftInstance);
+                if(level != k)
+                {
+                    cftInstance.setTtoRightChild();
+                    class1 = layerClassifier.classify(cftInstance);
+                }
+                else
+                {
+                    class1 = cftInstance.getT() + Classification.RIGHT_CHILD;
+                }
 
                 Double costClass0 = costCalculator.getCost(class0, cftInstance.getYactual());
                 Double costClass1 = costCalculator.getCost(class1, cftInstance.getYactual());
@@ -50,6 +66,7 @@ final public class CftClassifier {
                 cftInstance.setTtoLevel(k - level);
             }
 
+            dataset.getInstances().setClassIndex(73);
             layerClassifier = layerClassifier.train(dataset);
         }
         return layerClassifier;

@@ -28,7 +28,7 @@ public final class WeightedClassifierImpl implements WeightedClassifier {
 
     public final String classify(final Instance instance) throws Exception {
         //libSVM.classifyInstance(instance);
-        classifier.classifyInstance(instance);
-        return new String(); //todo - modify prediction to fit classes
+        double value = classifier.classifyInstance(instance);
+        return String.valueOf((int) value);
     }
 }

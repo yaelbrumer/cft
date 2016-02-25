@@ -38,15 +38,19 @@ final class LayerClassifier {
 
         String classification = weightedClassifier.classify(cftInstance.getInstance());
 
-        if (classification== Classification.LEFT_CHILD)
-            cftInstance.setTtoLeftChild();
-        else if (classification==Classification.RIGHT_CHILD)
-            cftInstance.setTtoRightChild();
+        if (prevLayerClassifier != null)
+        {
+            if (classification== Classification.LEFT_CHILD)
+                cftInstance.setTtoLeftChild();
+            else if (classification.equals(Classification.RIGHT_CHILD))
+                cftInstance.setTtoRightChild();
 
-        if (prevLayerClassifier !=null)
             return prevLayerClassifier.classify(cftInstance);
+        }
         else
-            return cftInstance.getT();
+        {
+            return  cftInstance.getT() + classification;
+        }
     }
 
     final LayerClassifier train(final CftDataset cftDataset) throws Exception {
