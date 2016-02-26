@@ -22,11 +22,12 @@ public class CftEvaluator {
             final String yActual = cftInstance.getYactual();
 
             //get prediction list for instance
-            final double[] yPredictedList = cftClassifier.classifyInstance(cftInstance.getInstance());
+            final double[] yPredictedList = cftClassifier.distributionForInstance(cftInstance.getInstance());
             for (int i = 0; i < yPredictedList.length ; i++) {
                 if(yPredictedList[i] == 1.0)
                 {
                     yPredicted = toBinaryString(i);
+                    break;
                 }
             }
 

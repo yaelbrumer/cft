@@ -16,12 +16,12 @@ public class CftClassifierTest {
     public void testTrain() throws Exception {
         CostCalculator costCalculator = new CostCalculatorImpl();
         Classifier classifier = new Logistic();
-        CftClassifier cftClassifier = new CftClassifier(costCalculator, classifier, 2);
+        CftClassifier cftClassifier = new CftClassifier(costCalculator, classifier, 8);
         final CftDataReader cftDataReader = new CftDataReader();
 
 
         final int numOfLables = 6;
-        final String filePath = CftClassifier.class.getClassLoader().getResource("emotions.arff").getPath();
+        final String filePath = CftClassifier.class.getClassLoader().getResource("emotions-train.arff").getPath();
         final CftDataset cftDataset = cftDataReader.readData(filePath, numOfLables);
 
         cftClassifier.buildClassifier(cftDataset);
@@ -33,6 +33,10 @@ public class CftClassifierTest {
             double[] result = cftClassifier.distributionForInstance(instance);
         }
 
+        final String testFilePath = CftClassifier.class.getClassLoader().getResource("emotions-test.arff").getPath();
+        final CftDataset cftTestDataset = cftDataReader.readData(filePath, numOfLables);
+        CftEvaluator cftEvaluator = new CftEvaluator(costCalculator, cftTestDataset);
+        final double v = cftEvaluator.calculateHammingLoss(cftClassifier);
     }
 
 }
