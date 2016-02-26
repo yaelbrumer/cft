@@ -80,8 +80,8 @@ final class CftDataReader {
 
             // set b attribute
             FastVector bValues = new FastVector();
-            bValues.addElement(Classification.RIGHT_CHILD);
             bValues.addElement(Classification.LEFT_CHILD);
+            bValues.addElement(Classification.RIGHT_CHILD);
             bValues.addElement(Classification.NONE);
             data.insertAttributeAt(new Attribute("b", bValues), data.numAttributes());
 

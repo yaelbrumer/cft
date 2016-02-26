@@ -2,30 +2,36 @@ import datasets.CftInstance;
 import datasets.CftDataset;
 import datasets.Classification;
 import interfaces.CostCalculator;
-import interfaces.WeightedClassifier;
+import weka.classifiers.Classifier;
+import weka.classifiers.SingleClassifierEnhancer;
+import weka.classifiers.meta.MultiClassClassifier;
 import weka.core.Instance;
 
-final public class CftClassifier {
+final public class CftClassifier extends MultiClassClassifier{
 
     private final int M;
+    private int k;
 
     private final CostCalculator costCalculator;
-    private final WeightedClassifier weightedClassifier;
+    private Classifier classifier;
 
     private LayerClassifier layerClassifier;
     private CftDataReader cftDataReader;
 
-    public CftClassifier(final CostCalculator costCalculator, final WeightedClassifier trainer, final int M) {
+    public CftClassifier(final CostCalculator costCalculator, final Classifier classifier, final int M) {
         this.costCalculator = costCalculator;
-        this.weightedClassifier = trainer;
+        this.classifier = classifier;
         this.M = M;
         this.cftDataReader=new CftDataReader();
     }
 
+    public void setClassifier(Classifier classifier){
+        this.classifier =classifier;
+    }
+
     private LayerClassifier buildTreeClassifier(final CftDataset dataset) throws Exception {
 
-        LayerClassifier layerClassifier = new LayerClassifier(weightedClassifier.clone());
-        final int k = dataset.getNumOfLables();
+        LayerClassifier layerClassifier = new LayerClassifier(classifier.getClass().newInstance());
 
         for (int level = k; level > 0; level--)
         {
@@ -37,7 +43,7 @@ final public class CftClassifier {
                 if(level != k)
                 {
                     cftInstance.setTtoLeftChild();
-                    class0 = layerClassifier.classify(cftInstance);
+                    class0 = layerClassifier.classifyCftInstance(cftInstance);
                 }
                 else{
                     class0 = cftInstance.getT() + Classification.LEFT_CHILD;
@@ -47,7 +53,7 @@ final public class CftClassifier {
                 if(level != k)
                 {
                     cftInstance.setTtoRightChild();
-                    class1 = layerClassifier.classify(cftInstance);
+                    class1 = layerClassifier.classifyCftInstance(cftInstance);
                 } else {
                     class1 = cftInstance.getT() + Classification.RIGHT_CHILD;
                 }
@@ -62,7 +68,7 @@ final public class CftClassifier {
             }
 
             if (level!=k) {
-                layerClassifier = new LayerClassifier(weightedClassifier.clone(), layerClassifier);
+                layerClassifier = new LayerClassifier(classifier.getClass().newInstance(), layerClassifier);
             }
 
             layerClassifier.train(dataset);
@@ -77,8 +83,9 @@ final public class CftClassifier {
 
     }
 
-    private void buildClassifier(final CftDataset dataset) throws Exception {
+    public void buildClassifier(final CftDataset dataset) throws Exception {
 
+        k = dataset.getNumOfLables();
         for (int i = 0; i < M; i++) {
             this.layerClassifier = buildTreeClassifier(dataset);
 
@@ -92,9 +99,9 @@ final public class CftClassifier {
                 j++;
 
                 cftInstance.setTtoLevel(1);
-                String currentClassification = layerClassifier.classify(cftInstance);
+                String currentClassification = layerClassifier.classifyCftInstance(cftInstance);
                 String prevClassification = cftInstance.getYpredicted();
-                if (currentClassification != prevClassification) {
+                if (!(currentClassification.equals(prevClassification))) {
                     CftInstance cftInstanceMissClassified = cftInstance.copy();
                     cftInstanceMissClassified.setYPredicted(currentClassification);
                     dataset.addMisclassified(cftInstanceMissClassified);
@@ -103,7 +110,12 @@ final public class CftClassifier {
         }
     }
 
-    public String classifyInstance(Instance instance) throws Exception {
-        return weightedClassifier.classify(instance);
+    public double[] distributionForInstance(Instance instance) throws Exception {
+        double[] result = new double[(int)Math.pow(2,k)];
+        CftInstance cftInstance = new CftInstance((Instance)instance.copy(),Classification.NONE,Classification.NONE,-1);
+        cftInstance.setTtoLevel(1);
+        String classification =  layerClassifier.classifyCftInstance(cftInstance);
+        result[Integer.parseInt(classification, 2)]=1.0;
+        return result;
     }
 }

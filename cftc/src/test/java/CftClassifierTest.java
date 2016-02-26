@@ -1,10 +1,10 @@
 import datasets.CftDataset;
 import impl.CostCalculatorImpl;
-import impl.LogisticWeightedClassifier;
-import impl.TreeClassifierImpl;
 import interfaces.CostCalculator;
-import interfaces.WeightedClassifier;
 import org.junit.Test;
+import weka.classifiers.Classifier;
+import weka.classifiers.functions.Logistic;
+import weka.core.Instance;
 import weka.core.Instances;
 
 /**
@@ -15,8 +15,8 @@ public class CftClassifierTest {
     @Test
     public void testTrain() throws Exception {
         CostCalculator costCalculator = new CostCalculatorImpl();
-        WeightedClassifier weightedClassifier = new LogisticWeightedClassifier();
-        CftClassifier cftClassifier = new CftClassifier(costCalculator, weightedClassifier, 5);
+        Classifier classifier = new Logistic();
+        CftClassifier cftClassifier = new CftClassifier(costCalculator, classifier, 2);
         final CftDataReader cftDataReader = new CftDataReader();
 
 
@@ -24,7 +24,14 @@ public class CftClassifierTest {
         final String filePath = CftClassifier.class.getClassLoader().getResource("emotions.arff").getPath();
         final CftDataset cftDataset = cftDataReader.readData(filePath, numOfLables);
 
-        cftClassifier.buildClassifier(filePath,6);
+        cftClassifier.buildClassifier(cftDataset);
+
+        Instances instances = cftDataset.getInstances();
+
+        for(int i=0; i<instances.numInstances(); i++){
+            Instance instance = instances.instance(i);
+            double[] result = cftClassifier.distributionForInstance(instance);
+        }
 
     }
 
