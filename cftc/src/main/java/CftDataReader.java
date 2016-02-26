@@ -85,6 +85,8 @@ final class CftDataReader {
             bValues.addElement(Classification.NONE);
             data.insertAttributeAt(new Attribute("b", bValues), data.numAttributes());
 
+            // set class index
+            data.setClassIndex(73);
             // create a CftDataset
             return new CftDataset(numLabelAttributes, data, yPredictedList, yActualList);
         }

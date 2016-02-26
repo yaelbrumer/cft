@@ -1,6 +1,5 @@
 package datasets;
 
-import exceptions.NotImplementedException;
 import weka.core.*;
 import java.util.*;
 
@@ -25,11 +24,15 @@ public class CftDataset implements Iterable<CftInstance> {
     public final Iterator<CftInstance> iterator(){
         return new Iterator<CftInstance>() {
 
-            private int position = 0;
-
             public boolean hasNext() {
                 return (yActualList.size() > position); //todo - verify indexing
             }
+
+            public void remove(){
+                throw new RuntimeException();
+            }
+
+            private int position = 0;
 
             public CftInstance next() {
 
@@ -38,7 +41,7 @@ public class CftDataset implements Iterable<CftInstance> {
                 String actual = yActualList.get(position);
 
                 position++;
-                return new CftInstance(instance,prediction,actual);
+                return new CftInstance(instance,prediction,actual,position-1);
             }
         };
     }
@@ -50,7 +53,12 @@ public class CftDataset implements Iterable<CftInstance> {
     public final Instances getInstances(){
         return dataSet;
     }
-    public final void addMisclassified(CftInstance actual, String missClassified) {
-        throw new NotImplementedException();
+
+    public final void addMisclassified(CftInstance cftInstance) {
+        Instance instance = cftInstance.getInstance();
+        int numOfObs = dataSet.numInstances();
+        yActualList.put(numOfObs,cftInstance.getYactual());
+        yPredictedList.put(numOfObs,cftInstance.getYpredicted());
+        dataSet.add(instance);
     }
 }

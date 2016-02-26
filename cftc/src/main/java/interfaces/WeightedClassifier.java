@@ -9,6 +9,8 @@ import weka.core.Instances;
  */
 public interface WeightedClassifier {
 
+    WeightedClassifier clone();
+
     void train(Instances dataSet) throws Exception;
 
     String classify(Instance instance) throws Exception;

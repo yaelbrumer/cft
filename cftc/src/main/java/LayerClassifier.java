@@ -22,9 +22,9 @@ final class LayerClassifier {
        //this.level=1;
     }
 
-    private LayerClassifier(final WeightedClassifier weightedClassifier, final LayerClassifier prevLayerClassifier){
+    LayerClassifier(final WeightedClassifier weightedClassifier, final LayerClassifier prevLayerClassifier){
         if (weightedClassifier ==null || prevLayerClassifier ==null)
-            throw new IllegalArgumentException("constructor values are null");
+            throw new NullPointerException("constructor values are null");
 
         this.weightedClassifier = weightedClassifier;
         this.prevLayerClassifier = prevLayerClassifier;
@@ -34,15 +34,15 @@ final class LayerClassifier {
     //// api
     final String classify(final CftInstance cftInstance) throws Exception {
         if (cftInstance==null)
-            throw new IllegalArgumentException("cftInstance is null");
+            throw new NullPointerException("cftInstance is null");
 
         String classification = weightedClassifier.classify(cftInstance.getInstance());
 
         if (prevLayerClassifier != null)
         {
-            if (classification== Classification.LEFT_CHILD)
+            if (classification.equals(Classification.LEFT_CHILD))
                 cftInstance.setTtoLeftChild();
-            else if (classification.equals(Classification.RIGHT_CHILD))
+            else
                 cftInstance.setTtoRightChild();
 
             return prevLayerClassifier.classify(cftInstance);
@@ -53,11 +53,10 @@ final class LayerClassifier {
         }
     }
 
-    final LayerClassifier train(final CftDataset cftDataset) throws Exception {
+    final void train(final CftDataset cftDataset) throws Exception {
         if (cftDataset==null)
-            throw new IllegalArgumentException("training set must not be null!!");
+            throw new NullPointerException("training set must not be null!!");
 
         weightedClassifier.train(cftDataset.getInstances());
-        return new LayerClassifier(weightedClassifier, this);
     }
 }

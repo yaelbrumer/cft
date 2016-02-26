@@ -1,9 +1,9 @@
 import datasets.CftDataset;
 import impl.CostCalculatorImpl;
-import impl.WeightedClassifierImpl;
+import impl.LogisticWeightedClassifier;
+import impl.TreeClassifierImpl;
 import interfaces.CostCalculator;
 import interfaces.WeightedClassifier;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import weka.core.Instances;
 
@@ -15,7 +15,7 @@ public class CftClassifierTest {
     @Test
     public void testTrain() throws Exception {
         CostCalculator costCalculator = new CostCalculatorImpl();
-        WeightedClassifier weightedClassifier = new WeightedClassifierImpl();
+        WeightedClassifier weightedClassifier = new LogisticWeightedClassifier();
         CftClassifier cftClassifier = new CftClassifier(costCalculator, weightedClassifier, 5);
         final CftDataReader cftDataReader = new CftDataReader();
 
@@ -26,13 +26,6 @@ public class CftClassifierTest {
 
         cftClassifier.buildClassifier(filePath,6);
 
-        //remove lables
-        Instances instances = cftDataset.getInstances();
-        for(int i=0; i< numOfLables -1 ;i++){
-            instances.deleteAttributeAt(instances.numAttributes() - 1);
-        }
-
-        final String s = cftClassifier.classifyInstance(instances.instance(0));
     }
 
 }
