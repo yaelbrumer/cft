@@ -1,6 +1,7 @@
 import datasets.CftInstance;
 import datasets.CftDataset;
 import datasets.Classification;
+import impl.CostCalculatorImpl;
 import interfaces.CostCalculator;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.MultiClassClassifier;
@@ -19,8 +20,90 @@ final public class CftClassifier extends MultiClassClassifier{
 
     private LayerClassifier layerClassifier;
 
+    private LayerClassifier buildSingleTreeClassifier(final CftDataset dataset) throws Exception {
+
+        LayerClassifier layerClassifier = new LayerClassifier(classifier.getClass().newInstance());
+
+        for (int level = K; level > 0; level--)
+        {
+            for (CftInstance cftInstance : dataset) {
+                String class0;
+                String class1;
+                cftInstance.setTtoLevel(level);
+
+                if(level != K)
+                {
+                    cftInstance.setTtoLeftChild();
+                    class0 = layerClassifier.classifyCftInstance(cftInstance);
+                }
+                else{
+                    class0 = cftInstance.getT() + Classification.LEFT_CHILD;
+                }
+
+                cftInstance.setTtoLevel(level);
+                if(level != K)
+                {
+                    cftInstance.setTtoRightChild();
+                    class1 = layerClassifier.classifyCftInstance(cftInstance);
+                } else {
+                    class1 = cftInstance.getT() + Classification.RIGHT_CHILD;
+                }
+
+                Double costClass0 = costCalculator.getCost(class0, cftInstance.getYactual());
+                Double costClass1 = costCalculator.getCost(class1, cftInstance.getYactual());
+
+                String b = (costClass0<costClass1)? Classification.LEFT_CHILD:Classification.RIGHT_CHILD;
+                cftInstance.setBn(b);
+                cftInstance.setWn(Math.abs(costClass0 - costClass1));
+                cftInstance.setTtoLevel(level);
+            }
+
+            if (level!= K) {
+                layerClassifier = new LayerClassifier(classifier.getClass().newInstance(), layerClassifier);
+            }
+
+            layerClassifier.train(dataset);
+        }
+        return layerClassifier;
+    }
+
+    private void buildMultipleTreeClassifier(final CftDataset dataset) throws Exception {
+
+        K = dataset.getNumOfLables();
+        for (int i = 0; i < M; i++) {
+            this.layerClassifier = buildSingleTreeClassifier(dataset);
+
+            int numInstances = dataset.getInstances().numInstances();
+            int j=0;
+
+            for (CftInstance cftInstance : dataset) {
+
+                if (j>=numInstances)
+                    break;
+                j++;
+
+                cftInstance.setTtoLevel(1);
+                String currentClassification = layerClassifier.classifyCftInstance(cftInstance);
+                String prevClassification = cftInstance.getYpredicted();
+                if (!(currentClassification.equals(prevClassification))) {
+                    CftInstance cftInstanceMissClassified = cftInstance.copy();
+                    cftInstanceMissClassified.setYPredicted(currentClassification);
+                    dataset.addMisclassified(cftInstanceMissClassified);
+                }
+            }
+        }
+    }
+
+    // -------- API ----------------
+
     public CftClassifier(final CostCalculator costCalculator, final Classifier classifier) {
         this.costCalculator = costCalculator;
+        this.classifier = classifier;
+        this.M=4;
+    }
+
+    public CftClassifier(final Classifier classifier) {
+        this.costCalculator = new CostCalculatorImpl();
         this.classifier = classifier;
         this.M=4;
     }
@@ -108,81 +191,7 @@ final public class CftClassifier extends MultiClassClassifier{
         else return "Base classifier not set.";
     }
 
-    private LayerClassifier buildSingleTreeClassifier(final CftDataset dataset) throws Exception {
 
-        LayerClassifier layerClassifier = new LayerClassifier(classifier.getClass().newInstance());
-
-        for (int level = K; level > 0; level--)
-        {
-            for (CftInstance cftInstance : dataset) {
-                String class0;
-                String class1;
-                cftInstance.setTtoLevel(level);
-
-                if(level != K)
-                {
-                    cftInstance.setTtoLeftChild();
-                    class0 = layerClassifier.classifyCftInstance(cftInstance);
-                }
-                else{
-                    class0 = cftInstance.getT() + Classification.LEFT_CHILD;
-                }
-
-                cftInstance.setTtoLevel(level);
-                if(level != K)
-                {
-                    cftInstance.setTtoRightChild();
-                    class1 = layerClassifier.classifyCftInstance(cftInstance);
-                } else {
-                    class1 = cftInstance.getT() + Classification.RIGHT_CHILD;
-                }
-
-                Double costClass0 = costCalculator.getCost(class0, cftInstance.getYactual());
-                Double costClass1 = costCalculator.getCost(class1, cftInstance.getYactual());
-
-                String b = (costClass0<costClass1)? Classification.LEFT_CHILD:Classification.RIGHT_CHILD;
-                cftInstance.setBn(b);
-                cftInstance.setWn(Math.abs(costClass0 - costClass1));
-                cftInstance.setTtoLevel(level);
-            }
-
-            if (level!= K) {
-                layerClassifier = new LayerClassifier(classifier.getClass().newInstance(), layerClassifier);
-            }
-
-            layerClassifier.train(dataset);
-        }
-        return layerClassifier;
-    }
-
-    private void buildMultipleTreeClassifier(final CftDataset dataset) throws Exception {
-
-        K = dataset.getNumOfLables();
-        for (int i = 0; i < M; i++) {
-            this.layerClassifier = buildSingleTreeClassifier(dataset);
-
-            int numInstances = dataset.getInstances().numInstances();
-            int j=0;
-
-            for (CftInstance cftInstance : dataset) {
-
-                if (j>=numInstances)
-                    break;
-                j++;
-
-                cftInstance.setTtoLevel(1);
-                String currentClassification = layerClassifier.classifyCftInstance(cftInstance);
-                String prevClassification = cftInstance.getYpredicted();
-                if (!(currentClassification.equals(prevClassification))) {
-                    CftInstance cftInstanceMissClassified = cftInstance.copy();
-                    cftInstanceMissClassified.setYPredicted(currentClassification);
-                    dataset.addMisclassified(cftInstanceMissClassified);
-                }
-            }
-        }
-    }
-
-    // API
     public void buildClassifier(Instances instances) throws Exception {
         if (K==0 || M==0)
             throw new IllegalArgumentException("Options -L and -M must be set to an integer greater than zero.");
