@@ -3,6 +3,7 @@ import interfaces.CostCalculator;
 import org.junit.Test;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.Logistic;
+import weka.core.Instances;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -14,7 +15,7 @@ import java.text.NumberFormat;
 /**
  * Created by eyapeleg on 2/13/2016.
  */
-public class CftMeasuresTest {
+public class CftMeasuresTest extends BaseTest{
 
     @Test
     public void testTrain() throws Exception {
@@ -24,7 +25,8 @@ public class CftMeasuresTest {
             CostCalculator costCalculator = new CostCalculatorImpl();
             //Classifier classifier = new J48();
             Classifier classifier = new Logistic();
-            CftClassifier cftClassifier = new CftClassifier(costCalculator, classifier, m);
+
+            CftClassifier cftClassifier = new CftClassifier(costCalculator, classifier);
             String csvFile = this.getClass().getResource("dataset.csv").getPath();
             BufferedReader br = null;
             String line = "";
@@ -32,6 +34,8 @@ public class CftMeasuresTest {
             int numOfLables;
             String trainFilePath;
             String testFilePath;
+            String[] options = {"-L","6","-M","5"};
+            cftClassifier.setOptions(options);
 
             System.out.println("M= " + m);
             try {
@@ -45,14 +49,15 @@ public class CftMeasuresTest {
                     testFilePath = this.getClass().getResource(dataset[1]).getPath();
 
                     long startTime = System.currentTimeMillis();
-                    cftClassifier.buildClassifier(trainFilePath, numOfLables);
+
+                    cftClassifier.buildClassifier(loadInstances(trainFilePath));
                     long stopTime = System.currentTimeMillis();
 
-                    CftEvaluator cftTestEvaluator = new CftEvaluator(testFilePath, numOfLables, costCalculator, cftClassifier);
+                    CftEvaluator cftTestEvaluator = new CftEvaluator(loadInstances(testFilePath), numOfLables, costCalculator, cftClassifier);
                     System.out.println("Test Hamming-Loss= " + cftTestEvaluator.calculateHammingLoss());
                     System.out.println("Test Accuracy= " + cftTestEvaluator.calculateAccuracy());
 
-                    CftEvaluator cftTrainEvaluator = new CftEvaluator(trainFilePath, numOfLables, costCalculator, cftClassifier);
+                    CftEvaluator cftTrainEvaluator = new CftEvaluator(loadInstances(trainFilePath), numOfLables, costCalculator, cftClassifier);
                     System.out.println("Training Hamming-Loss= " + cftTrainEvaluator.calculateHammingLoss());
                     System.out.println("Training Accuracy= " + cftTrainEvaluator.calculateAccuracy());
 

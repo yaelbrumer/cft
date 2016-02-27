@@ -11,7 +11,7 @@ import weka.core.converters.ConverterUtils;
 /**
  * Created by eyapeleg on 2/13/2016.
  */
-public class CftClassifierTest {
+public class CftClassifierTest extends BaseTest {
 
     @Test
     public void testTrain() throws Exception {
@@ -34,13 +34,5 @@ public class CftClassifierTest {
         }
 
     }
-
-    private Instances loadInstances(final String arffFilePath) throws Exception {
-        ConverterUtils.DataSource source = new ConverterUtils.DataSource(arffFilePath);
-        Instances data = source.getDataSet();
-
-        return data;
-    }
-
 
 }

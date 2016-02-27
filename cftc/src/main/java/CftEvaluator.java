@@ -3,6 +3,7 @@ import datasets.CftInstance;
 import interfaces.CostCalculator;
 import mulan.core.ArgumentNullException;
 import weka.classifiers.Classifier;
+import weka.core.Instances;
 
 public class CftEvaluator {
 
@@ -11,12 +12,12 @@ public class CftEvaluator {
     private CftDataReader cftDataReader;
     private Classifier classifier;
 
-    public CftEvaluator(final String testFilePath, int numLabelAttributes, final CostCalculator costCalculator, Classifier classifier) throws Exception {
+    public CftEvaluator(Instances instances , int numLabelAttributes, final CostCalculator costCalculator, Classifier classifier) throws Exception {
         this.costCalculator = costCalculator;
         this.cftDataReader = new CftDataReader();
         this.classifier = classifier;
 
-        CftDataset dataset = cftDataReader.readData(testFilePath, numLabelAttributes);
+        CftDataset dataset = cftDataReader.readData(instances, numLabelAttributes);
         this.dataset = dataset;
     }
 
@@ -54,11 +55,14 @@ public class CftEvaluator {
                 throw new ArgumentNullException("yPredicted");
             }
 
-            if(yActual != yPredicted)
+            if(!yActual.equals(yPredicted))
             {
                 miss++;
             }
         }
+
+        System.out.println("Training - Missing= " + miss);
+        System.out.println("Training - Total= " + n);
 
         return (1 - miss/n);
     }
