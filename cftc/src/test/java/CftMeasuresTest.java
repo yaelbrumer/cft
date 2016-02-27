@@ -1,5 +1,6 @@
 import impl.HammingLossCostCalculator;
 import interfaces.CostCalculator;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import weka.classifiers.Classifier;
@@ -8,10 +9,7 @@ import weka.classifiers.functions.LibSVM;
 import weka.classifiers.functions.Logistic;
 import weka.classifiers.trees.J48;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -25,41 +23,54 @@ public class CftMeasuresTest extends BaseTest{
     private static CostCalculator costCalculator;
     private static String dataSetFileName;
 
+    private static final String COMMA_DELIMITER = ",";
+    private static final String NEW_LINE_SEPARATOR = "\n";
+    private static FileWriter fileWriter;
+    private static NumberFormat formatter;
+
     @Before
-    public void init(){
+    public void init() throws IOException {
         classifiers = new Classifier[]{new J48(), new Logistic(), new NaiveBayes()};
-        M=8;
+        M=2;
         costCalculator = new HammingLossCostCalculator();
         dataSetFileName = "dataset.csv";
+
+        File outputFile = new File("output.csv");
+        if (outputFile.exists()) {
+            outputFile.delete();
+        }
+        fileWriter = new FileWriter(outputFile);
+
+        fileWriter.append("Dataset ,Classifier,Cost Function,M ,Train/Test, Hamming-Loss, Accuracy, Execution Time\n");
+        formatter = new DecimalFormat("#0.00000");
     }
 
     @Test
     public void testTrain() throws Exception {
 
         for(Classifier classifier : classifiers) {
+            System.out.println(classifier.getClass().toString());
 
-            System.out.println("-----------------------\nClassifier = "+classifier.getClass());
             for (int m = 1; m <= M; m++) {
-
+                System.out.println(Integer.toString(m));
                 CftClassifier cftClassifier = new CftClassifier(costCalculator, classifier);
                 String dataSetFile = this.getClass().getResource(dataSetFileName).getPath();
                 BufferedReader br = null;
                 String line = "";
-                String cvsSplitBy = ",";
                 int numOfLables;
                 String trainFilePath;
                 String testFilePath;
 
-                System.out.println("M= " + m);
                 try {
 
                     br = new BufferedReader(new FileReader(dataSetFile));
                     while ((line = br.readLine()) != null) {
-                        String[] dataset = line.split(cvsSplitBy);
-                        System.out.println("dataset "+dataset[0]+", lables =" + dataset[2]);
+                        String[] dataset = line.split(COMMA_DELIMITER);
                         numOfLables = Integer.valueOf(dataset[2]);
                         trainFilePath = this.getClass().getResource(dataset[0]).getPath();
                         testFilePath = this.getClass().getResource(dataset[1]).getPath();
+                        System.out.println(dataset[0]);
+
                         String[] options = {"-L", Integer.toString(numOfLables), "-M", Integer.toString(m)};
                         cftClassifier.setOptions(options);
 
@@ -68,24 +79,54 @@ public class CftMeasuresTest extends BaseTest{
                         cftClassifier.buildClassifier(loadInstances(trainFilePath));
                         long stopTime = System.currentTimeMillis();
 
+
                         CftEvaluator cftTestEvaluator = new CftEvaluator(loadInstances(testFilePath),
                                                                          numOfLables,
                                                                          costCalculator,
                                                                          cftClassifier);
-                        System.out.println("Test:");
-                        System.out.println("1. Hamming-Loss= " + cftTestEvaluator.calculateHammingLoss());
-                        System.out.println("2. Accuracy= " + cftTestEvaluator.calculateAccuracy());
-
                         CftEvaluator cftTrainEvaluator = new CftEvaluator(loadInstances(trainFilePath),
                                                                           numOfLables,
                                                                           costCalculator,
                                                                           cftClassifier);
-                        System.out.println("Train:");
-                        System.out.println("1. Hamming-Loss= " + cftTrainEvaluator.calculateHammingLoss());
-                        System.out.println("2. Accuracy= " + cftTrainEvaluator.calculateAccuracy());
 
-                        NumberFormat formatter = new DecimalFormat("#0.00000");
-                        System.out.print("Execution time is " + formatter.format((stopTime - startTime) / 1000d) + " seconds\n");
+
+
+                        // train
+                        fileWriter.append(dataset[0]);
+                        fileWriter.append(COMMA_DELIMITER);
+                        fileWriter.append(classifier.getClass().toString());
+                        fileWriter.append(COMMA_DELIMITER);
+                        fileWriter.append("Hamming Distance");
+                        fileWriter.append(COMMA_DELIMITER);
+                        fileWriter.append(Integer.toString(m));
+                        fileWriter.append(COMMA_DELIMITER);
+                        fileWriter.append("Train");
+                        fileWriter.append(COMMA_DELIMITER);
+                        fileWriter.append(Double.toString(cftTrainEvaluator.calculateHammingLoss()));
+                        fileWriter.append(COMMA_DELIMITER);
+                        fileWriter.append(Double.toString(cftTrainEvaluator.calculateAccuracy()));
+                        fileWriter.append(COMMA_DELIMITER);
+                        fileWriter.append(formatter.format((stopTime - startTime) / 1000d));
+                        fileWriter.append(NEW_LINE_SEPARATOR);
+
+
+                        // Test
+                        fileWriter.append(dataset[0]);
+                        fileWriter.append(COMMA_DELIMITER);
+                        fileWriter.append(classifier.getClass().toString());
+                        fileWriter.append(COMMA_DELIMITER);
+                        fileWriter.append("Hamming Distance");
+                        fileWriter.append(COMMA_DELIMITER);
+                        fileWriter.append(Integer.toString(m));
+                        fileWriter.append(COMMA_DELIMITER);
+                        fileWriter.append("Test");
+                        fileWriter.append(COMMA_DELIMITER);
+                        fileWriter.append(Double.toString(cftTestEvaluator.calculateHammingLoss()));
+                        fileWriter.append(COMMA_DELIMITER);
+                        fileWriter.append(Double.toString(cftTestEvaluator.calculateAccuracy()));
+                        fileWriter.append(COMMA_DELIMITER);
+                        fileWriter.append(formatter.format((stopTime - startTime) / 1000d));
+                        fileWriter.append(NEW_LINE_SEPARATOR);
                     }
 
                 } catch (FileNotFoundException e) {
@@ -103,5 +144,10 @@ public class CftMeasuresTest extends BaseTest{
                 }
             }
         }
+    }
+
+    @After
+    public void cleanup() throws IOException {
+        fileWriter.close();
     }
 }
