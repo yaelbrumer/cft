@@ -1,15 +1,10 @@
-import datasets.CftDataset;
-import datasets.Classification;
-import mulan.core.ArgumentNullException;
+import model.CftDataset;
+import model.Classification;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.converters.ConverterUtils;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 /**

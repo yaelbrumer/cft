@@ -1,4 +1,4 @@
-package datasets;
+package model;
 
 import weka.core.*;
 import java.util.*;

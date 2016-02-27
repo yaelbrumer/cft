@@ -1,6 +1,5 @@
-package datasets;
+package model;
 
-import exceptions.NotImplementedException;
 import weka.core.Instance;
 
 public final class CftInstance implements Cloneable {

@@ -2,7 +2,7 @@ package impl;
 
 import interfaces.CostCalculator;
 
-public final class CostCalculatorImpl implements CostCalculator {
+public final class HammingLossCostCalculator implements CostCalculator {
 
     public final double getCost(final String predicted, final String actual) {
 

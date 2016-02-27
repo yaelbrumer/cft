@@ -1,7 +1,7 @@
-import datasets.CftInstance;
-import datasets.CftDataset;
-import datasets.Classification;
-import impl.CostCalculatorImpl;
+import model.CftInstance;
+import model.CftDataset;
+import model.Classification;
+import impl.HammingLossCostCalculator;
 import interfaces.CostCalculator;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.MultiClassClassifier;
@@ -97,14 +97,24 @@ final public class CftClassifier extends MultiClassClassifier{
 
     // -------- API ----------------
 
+    /**
+     * class constructor.
+     * @param costCalculator - an object that calculates the cost of a misclassification.
+     * @param classifier - a binary classifier.
+     */
     public CftClassifier(final CostCalculator costCalculator, final Classifier classifier) {
         this.costCalculator = costCalculator;
         this.classifier = classifier;
         this.M=4;
     }
 
+    /**
+     *  class constructor.
+     *  the classifier would use the default hamming loss implementation as the cost function
+     * @param classifier - a binary classifier.
+     */
     public CftClassifier(final Classifier classifier) {
-        this.costCalculator = new CostCalculatorImpl();
+        this.costCalculator = new HammingLossCostCalculator();
         this.classifier = classifier;
         this.M=4;
     }

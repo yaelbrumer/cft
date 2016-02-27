@@ -1,6 +1,6 @@
-import datasets.CftDataset;
-import datasets.CftInstance;
-import datasets.Classification;
+import model.CftDataset;
+import model.CftInstance;
+import model.Classification;
 import weka.classifiers.Classifier;
 
 /**

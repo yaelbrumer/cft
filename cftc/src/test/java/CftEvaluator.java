@@ -1,5 +1,5 @@
-import datasets.CftDataset;
-import datasets.CftInstance;
+import model.CftDataset;
+import model.CftInstance;
 import interfaces.CostCalculator;
 import mulan.core.ArgumentNullException;
 import weka.classifiers.Classifier;

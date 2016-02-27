@@ -1,4 +1,4 @@
-package datasets;
+package model;
 
 /**
  * Created by eyapeleg on 2/18/2016.
