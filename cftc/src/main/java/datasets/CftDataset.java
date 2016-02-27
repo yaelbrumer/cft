@@ -3,9 +3,6 @@ package datasets;
 import weka.core.*;
 import java.util.*;
 
-/**
- * Created by eyapeleg on 2/12/2016.
- */
 public class CftDataset implements Iterable<CftInstance> {
 
     private Instances dataSet;
@@ -25,7 +22,7 @@ public class CftDataset implements Iterable<CftInstance> {
         return new Iterator<CftInstance>() {
 
             public boolean hasNext() {
-                return (yActualList.size() > position); //todo - verify indexing
+                return (yActualList.size() > position);
             }
 
             public void remove(){
