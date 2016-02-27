@@ -4,16 +4,23 @@ import datasets.Classification;
 import interfaces.CostCalculator;
 import weka.classifiers.Classifier;
 import weka.classifiers.SingleClassifierEnhancer;
+import weka.classifiers.functions.Logistic;
 import weka.classifiers.meta.MultiClassClassifier;
+import weka.core.FastVector;
 import weka.core.Instance;
+import weka.core.Option;
+import weka.core.Utils;
+
+import java.util.Enumeration;
 
 final public class CftClassifier extends MultiClassClassifier{
 
-    private final int M;
+    private int M;
     private int k;
 
     private final CostCalculator costCalculator;
     private Classifier classifier;
+    private String baseClassifierName;
 
     private LayerClassifier layerClassifier;
     private CftDataReader cftDataReader;
@@ -25,8 +32,70 @@ final public class CftClassifier extends MultiClassClassifier{
         this.cftDataReader=new CftDataReader();
     }
 
+    public String globalInfo() {
+        return "a multi-label meta classifier.\nThe labels are converted into classes according to their binary representation.\nAn implementation of a base binary classifier is required.";
+    }
+
+    public String tipText(){
+        return "a multi-label\nmeta classifier\n";
+    }
+
+    public Enumeration listOptions() {
+        FastVector newVector = new FastVector(3);
+        newVector.addElement(new Option("\tTurn on debugging output.", "D", 0, "-D"));
+        newVector.addElement(new Option("\tSet the number of iterations (default 4).", "M", 1, "-M <number>"));
+        newVector.addElement(new Option("\tSet the name of the base classifier.", "W", 1, "-W <classifier name>"));
+        return newVector.elements();
+    }
+
+    public void setOptions(String[] options) throws Exception {
+        this.setDebug(Utils.getFlag('D', options));
+        String M = Utils.getOption('M', options);
+        if(M.length()== 0 || !M.matches("^-?\\d+$"))
+            throw new IllegalArgumentException("M option must be an integer greater than zero.");
+        else
+            this.M = Integer.parseInt(M);
+        baseClassifierName = Utils.getOption("W",options);
+    }
+
+    public String[] getOptions() {
+        String[] options = new String[3];
+        int current = 0;
+        if(this.getDebug()) {
+            options[current++] = "-D";
+        }
+
+        options[current++] = "-M";
+        options[current++] = "-W";
+        return options;
+    }
+
+    public String toString(){
+        LayerClassifier currentLayer =this.layerClassifier;
+        String output ="";
+        while(currentLayer!=null){
+            output = currentLayer.toString()+"\n\n";
+            currentLayer = currentLayer.getPrevLayerClassifier();
+        }
+
+        return output;
+    }
+
+
     public void setClassifier(Classifier classifier){
         this.classifier =classifier;
+    }
+
+    public Classifier getClassifier(){
+        return classifier;
+    }
+
+    public String defaultClassifierString(){
+        if (baseClassifierName!=null)
+            return baseClassifierName;
+        else if (classifier!=null)
+            return classifier.toString();
+        else return "Base classifier not set.";
     }
 
     private LayerClassifier buildTreeClassifier(final CftDataset dataset) throws Exception {
