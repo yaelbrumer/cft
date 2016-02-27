@@ -70,7 +70,6 @@ final public class CftClassifier extends MultiClassClassifier{
     private void buildMultipleTreeClassifier(final CftDataset dataset) throws Exception {
 
         K = dataset.getNumOfLables();
-        double miss = 0; //TODO remove
 
         for (int i = 0; i < M; i++) {
             this.layerClassifier = buildSingleTreeClassifier(dataset);
@@ -88,21 +87,12 @@ final public class CftClassifier extends MultiClassClassifier{
                 String currentClassification = layerClassifier.classifyCftInstance(cftInstance);
                 String prevClassification = cftInstance.getYpredicted();
                 if (!(currentClassification.equals(prevClassification))) {
-                    miss++; //TODO - remove that validation
                     CftInstance cftInstanceMissClassified = cftInstance.copy();
                     cftInstanceMissClassified.setYPredicted(currentClassification);
                     dataset.addMisclassified(cftInstanceMissClassified);
                 }
             }
         }
-
-        //TODO - remove that validation
-        int n = dataset.getInstances().numInstances();
-        double acc = 1 - (miss/n);
-        System.out.println("Accuracy During Training - Missing= " + miss);
-        System.out.println("Accuracy During Training - Total= " + n);
-
-        System.out.println("Accuracy During Training= " + acc);
     }
 
     // -------- API ----------------

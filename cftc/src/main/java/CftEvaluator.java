@@ -61,8 +61,8 @@ public class CftEvaluator {
             }
         }
 
-        System.out.println("Training - Missing= " + miss);
-        System.out.println("Training - Total= " + n);
+//        System.out.println("Training - Missing= " + miss);
+//        System.out.println("Training - Total= " + n);
 
         return (1 - miss/n);
     }

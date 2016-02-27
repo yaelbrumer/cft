@@ -20,7 +20,7 @@ public class CftMeasuresTest extends BaseTest{
     @Test
     public void testTrain() throws Exception {
 
-        for (int m = 1; m <= 1; m++) {
+        for (int m = 1; m <= 8; m++) {
 
             CostCalculator costCalculator = new CostCalculatorImpl();
             //Classifier classifier = new J48();
@@ -34,8 +34,6 @@ public class CftMeasuresTest extends BaseTest{
             int numOfLables;
             String trainFilePath;
             String testFilePath;
-            String[] options = {"-L","6","-M","5"};
-            cftClassifier.setOptions(options);
 
             System.out.println("M= " + m);
             try {
@@ -47,6 +45,8 @@ public class CftMeasuresTest extends BaseTest{
                     numOfLables = Integer.valueOf(dataset[2]);
                     trainFilePath = this.getClass().getResource(dataset[0]).getPath();
                     testFilePath = this.getClass().getResource(dataset[1]).getPath();
+                    String[] options = {"-L",Integer.toString(numOfLables),"-M",Integer.toString(m)};
+                    cftClassifier.setOptions(options);
 
                     long startTime = System.currentTimeMillis();
 
@@ -54,12 +54,14 @@ public class CftMeasuresTest extends BaseTest{
                     long stopTime = System.currentTimeMillis();
 
                     CftEvaluator cftTestEvaluator = new CftEvaluator(loadInstances(testFilePath), numOfLables, costCalculator, cftClassifier);
-                    System.out.println("Test Hamming-Loss= " + cftTestEvaluator.calculateHammingLoss());
-                    System.out.println("Test Accuracy= " + cftTestEvaluator.calculateAccuracy());
+                    System.out.println("Test:");
+                            System.out.println("1. Hamming-Loss= " + cftTestEvaluator.calculateHammingLoss());
+                    System.out.println("2. Accuracy= " + cftTestEvaluator.calculateAccuracy());
 
                     CftEvaluator cftTrainEvaluator = new CftEvaluator(loadInstances(trainFilePath), numOfLables, costCalculator, cftClassifier);
-                    System.out.println("Training Hamming-Loss= " + cftTrainEvaluator.calculateHammingLoss());
-                    System.out.println("Training Accuracy= " + cftTrainEvaluator.calculateAccuracy());
+                    System.out.println("Train:");
+                    System.out.println("1. Hamming-Loss= " + cftTrainEvaluator.calculateHammingLoss());
+                    System.out.println("2. Accuracy= " + cftTrainEvaluator.calculateAccuracy());
 
                     NumberFormat formatter = new DecimalFormat("#0.00000");
                     System.out.print("Execution time is " + formatter.format((stopTime - startTime) / 1000d) + " seconds\n");
