@@ -42,56 +42,6 @@ final class CftDataReader {
         return sb.toString();
     }
 
-    private Instances loadInstances(final String arffFilePath) throws Exception {
-        ConverterUtils.DataSource source = new ConverterUtils.DataSource(arffFilePath);
-        Instances data = source.getDataSet();
-
-        return data;
-    }
-
-
-    /// API
-    final CftDataset readData(final String arffFilePath, final int numLabelAttributes) throws Exception {
-
-        if (arffFilePath == null) {
-            throw new ArgumentNullException("arffFilePath");
-        } else if (numLabelAttributes < 2) {
-            throw new IllegalArgumentException("The number of label attributes must me at least 2 or higher.");
-        } else {
-
-            // read data
-            Instances data = loadInstances(arffFilePath);
-
-            // create actual and predicted lists
-            TreeMap<Integer, String> yActualList = CreateLabelValue(data, numLabelAttributes);
-            TreeMap<Integer, String> yPredictedList = (TreeMap<Integer, String>)yActualList.clone();
-
-
-            //remove lables
-            for(int i=0; i<numLabelAttributes;i++){
-                data.deleteAttributeAt(data.numAttributes()-1);
-            }
-
-            // set t attribute
-            FastVector tValues = new FastVector();
-            generateTvalues(tValues,"",0,numLabelAttributes);
-            data.insertAttributeAt(new Attribute("t", tValues), data.numAttributes());
-
-
-            // set b attribute
-            FastVector bValues = new FastVector();
-            bValues.addElement(Classification.LEFT_CHILD);
-            bValues.addElement(Classification.RIGHT_CHILD);
-            bValues.addElement(Classification.NONE);
-            data.insertAttributeAt(new Attribute("b", bValues), data.numAttributes());
-
-            // set class index
-            data.setClassIndex(73);
-            // create a CftDataset
-            return new CftDataset(numLabelAttributes, data, yPredictedList, yActualList);
-        }
-    }
-
     private void generateTvalues(FastVector vector, String t,int i, int k){
         vector.addElement(t);
         if (!(i<k-1))
@@ -100,6 +50,37 @@ final class CftDataReader {
         generateTvalues(vector,t+Classification.RIGHT_CHILD,i+1,k);
     }
 
+    /// API
+    final CftDataset readData(Instances instances, int numLabelAttributes ) throws Exception {
 
+    // create actual and predicted lists
+        TreeMap<Integer, String> yActualList = CreateLabelValue(instances, numLabelAttributes);
+        TreeMap<Integer, String> yPredictedList = (TreeMap<Integer, String>)yActualList.clone();
+
+
+        //remove lables
+        for(int i=0; i<numLabelAttributes;i++){
+            instances.deleteAttributeAt(instances.numAttributes()-1);
+        }
+
+        // set t attribute
+        FastVector tValues = new FastVector();
+        generateTvalues(tValues,"",0,numLabelAttributes);
+        instances.insertAttributeAt(new Attribute("t", tValues), instances.numAttributes());
+
+
+        // set b attribute
+        FastVector bValues = new FastVector();
+        bValues.addElement(Classification.LEFT_CHILD);
+        bValues.addElement(Classification.RIGHT_CHILD);
+        bValues.addElement(Classification.NONE);
+        instances.insertAttributeAt(new Attribute("b", bValues), instances.numAttributes());
+
+        // set class index
+        instances.setClassIndex(73);
+
+        // create a CftDataset
+        return new CftDataset(numLabelAttributes, instances, yPredictedList, yActualList);
+    }
 }
 

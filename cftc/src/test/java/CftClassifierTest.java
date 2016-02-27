@@ -6,6 +6,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.functions.Logistic;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.converters.ConverterUtils;
 
 /**
  * Created by eyapeleg on 2/13/2016.
@@ -16,17 +17,16 @@ public class CftClassifierTest {
     public void testTrain() throws Exception {
         CostCalculator costCalculator = new CostCalculatorImpl();
         Classifier classifier = new Logistic();
-        CftClassifier cftClassifier = new CftClassifier(costCalculator, classifier, 2);
-        final CftDataReader cftDataReader = new CftDataReader();
+        CftClassifier cftClassifier = new CftClassifier(costCalculator, classifier);
+
+        String[] optionsBefore = cftClassifier.getOptions();
+        String[] options = {"-L","6","-M","5"};
+        cftClassifier.setOptions(options);
+        String[] optionsAfter = cftClassifier.getOptions();
 
 
-        final int numOfLables = 6;
-        final String filePath = CftClassifier.class.getClassLoader().getResource("emotions.arff").getPath();
-        final CftDataset cftDataset = cftDataReader.readData(filePath, numOfLables);
-
-        cftClassifier.buildClassifier(cftDataset);
-
-        Instances instances = cftDataset.getInstances();
+        final Instances instances = loadInstances(CftClassifier.class.getClassLoader().getResource("emotions.arff").getPath());
+        cftClassifier.buildClassifier(instances);
 
         for(int i=0; i<instances.numInstances(); i++){
             Instance instance = instances.instance(i);
@@ -34,5 +34,13 @@ public class CftClassifierTest {
         }
 
     }
+
+    private Instances loadInstances(final String arffFilePath) throws Exception {
+        ConverterUtils.DataSource source = new ConverterUtils.DataSource(arffFilePath);
+        Instances data = source.getDataSet();
+
+        return data;
+    }
+
 
 }

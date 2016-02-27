@@ -3,33 +3,26 @@ import datasets.CftDataset;
 import datasets.Classification;
 import interfaces.CostCalculator;
 import weka.classifiers.Classifier;
-import weka.classifiers.SingleClassifierEnhancer;
-import weka.classifiers.functions.Logistic;
 import weka.classifiers.meta.MultiClassClassifier;
-import weka.core.FastVector;
-import weka.core.Instance;
-import weka.core.Option;
-import weka.core.Utils;
+import weka.core.*;
 
 import java.util.Enumeration;
 
 final public class CftClassifier extends MultiClassClassifier{
 
     private int M;
-    private int k;
+    private int K;
 
     private final CostCalculator costCalculator;
     private Classifier classifier;
     private String baseClassifierName;
 
     private LayerClassifier layerClassifier;
-    private CftDataReader cftDataReader;
 
-    public CftClassifier(final CostCalculator costCalculator, final Classifier classifier, final int M) {
+    public CftClassifier(final CostCalculator costCalculator, final Classifier classifier) {
         this.costCalculator = costCalculator;
         this.classifier = classifier;
-        this.M = M;
-        this.cftDataReader=new CftDataReader();
+        this.M=4;
     }
 
     public String globalInfo() {
@@ -43,30 +36,47 @@ final public class CftClassifier extends MultiClassClassifier{
     public Enumeration listOptions() {
         FastVector newVector = new FastVector(3);
         newVector.addElement(new Option("\tTurn on debugging output.", "D", 0, "-D"));
-        newVector.addElement(new Option("\tSet the number of iterations (default 4).", "M", 1, "-M <number>"));
+        newVector.addElement(new Option("\tSet the number of labels (obligatory).", "L", 1, "-L"));
+        newVector.addElement(new Option("\tSet the number of iterations (default 4 iterations)", "M", 1, "-M <number>"));
         newVector.addElement(new Option("\tSet the name of the base classifier.", "W", 1, "-W <classifier name>"));
         return newVector.elements();
     }
 
     public void setOptions(String[] options) throws Exception {
+
+        //D
         this.setDebug(Utils.getFlag('D', options));
+
+        //L
+        String K = Utils.getOption('L', options);
+        if(K.length()== 0 || !K.matches("^-?\\d+$"))
+            throw new IllegalArgumentException("L option must be an integer greater than zero.");
+        else
+            this.K = Integer.parseInt(K);
+
+        //M
         String M = Utils.getOption('M', options);
         if(M.length()== 0 || !M.matches("^-?\\d+$"))
             throw new IllegalArgumentException("M option must be an integer greater than zero.");
         else
             this.M = Integer.parseInt(M);
-        baseClassifierName = Utils.getOption("W",options);
+
+        //W
+        this.baseClassifierName = Utils.getOption("W",options);
     }
 
     public String[] getOptions() {
-        String[] options = new String[3];
-        int current = 0;
-        if(this.getDebug()) {
-            options[current++] = "-D";
-        }
+        String[] options = new String[7];
 
-        options[current++] = "-M";
-        options[current++] = "-W";
+        int current = 0;
+        options[current++] = "D";
+        options[current++] = "L";
+        options[current++] = Integer.toString(K);
+        options[current++] = "M";
+        options[current++] = Integer.toString(M);
+        options[current++] = "W";
+        options[current++] = baseClassifierName;
+
         return options;
     }
 
@@ -98,18 +108,18 @@ final public class CftClassifier extends MultiClassClassifier{
         else return "Base classifier not set.";
     }
 
-    private LayerClassifier buildTreeClassifier(final CftDataset dataset) throws Exception {
+    private LayerClassifier buildSingleTreeClassifier(final CftDataset dataset) throws Exception {
 
         LayerClassifier layerClassifier = new LayerClassifier(classifier.getClass().newInstance());
 
-        for (int level = k; level > 0; level--)
+        for (int level = K; level > 0; level--)
         {
             for (CftInstance cftInstance : dataset) {
                 String class0;
                 String class1;
                 cftInstance.setTtoLevel(level);
 
-                if(level != k)
+                if(level != K)
                 {
                     cftInstance.setTtoLeftChild();
                     class0 = layerClassifier.classifyCftInstance(cftInstance);
@@ -119,7 +129,7 @@ final public class CftClassifier extends MultiClassClassifier{
                 }
 
                 cftInstance.setTtoLevel(level);
-                if(level != k)
+                if(level != K)
                 {
                     cftInstance.setTtoRightChild();
                     class1 = layerClassifier.classifyCftInstance(cftInstance);
@@ -136,7 +146,7 @@ final public class CftClassifier extends MultiClassClassifier{
                 cftInstance.setTtoLevel(level);
             }
 
-            if (level!=k) {
+            if (level!= K) {
                 layerClassifier = new LayerClassifier(classifier.getClass().newInstance(), layerClassifier);
             }
 
@@ -145,18 +155,11 @@ final public class CftClassifier extends MultiClassClassifier{
         return layerClassifier;
     }
 
-    // API
-    final public void buildClassifier(final String arffFilePath,final int numLabelAttributes) throws Exception {
-        CftDataset cftDataset = cftDataReader.readData(arffFilePath, numLabelAttributes);
-        buildClassifier(cftDataset);
+    private void buildMultipleTreeClassifier(final CftDataset dataset) throws Exception {
 
-    }
-
-    public void buildClassifier(final CftDataset dataset) throws Exception {
-
-        k = dataset.getNumOfLables();
+        K = dataset.getNumOfLables();
         for (int i = 0; i < M; i++) {
-            this.layerClassifier = buildTreeClassifier(dataset);
+            this.layerClassifier = buildSingleTreeClassifier(dataset);
 
             int numInstances = dataset.getInstances().numInstances();
             int j=0;
@@ -179,8 +182,18 @@ final public class CftClassifier extends MultiClassClassifier{
         }
     }
 
+    // API
+    public void buildClassifier(Instances instances) throws Exception {
+        if (K==0 || M==0)
+            throw new IllegalArgumentException("Options -L and -M must be set to an integer greater than zero.");
+
+        CftDataReader cftDataReader = new CftDataReader();
+        CftDataset cftDataset = cftDataReader.readData(instances, K);
+        buildMultipleTreeClassifier(cftDataset);
+    }
+
     public double[] distributionForInstance(Instance instance) throws Exception {
-        double[] result = new double[(int)Math.pow(2,k)];
+        double[] result = new double[(int)Math.pow(2, K)];
         CftInstance cftInstance = new CftInstance((Instance)instance.copy(),Classification.NONE,Classification.NONE,-1);
         cftInstance.setTtoLevel(1);
         String classification =  layerClassifier.classifyCftInstance(cftInstance);

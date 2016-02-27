@@ -58,11 +58,11 @@ final class LayerClassifier {
         classifier.buildClassifier(cftDataset.getInstances());
     }
 
-    public String toString(){
+    final public String toString(){
         return classifier.toString();
     }
 
-    public LayerClassifier getPrevLayerClassifier(){
+    final public LayerClassifier getPrevLayerClassifier(){
         return prevLayerClassifier;
     }
 }
