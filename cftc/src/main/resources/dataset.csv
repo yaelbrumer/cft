@@ -1,0 +1,3 @@
+emotions-train.arff,emotions-test.arff,6
+scene-train.arff,scene-test.arff,6
+flags-train.arff,flags-test.arff,7

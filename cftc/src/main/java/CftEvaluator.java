@@ -1,40 +1,81 @@
 import datasets.CftDataset;
 import datasets.CftInstance;
 import interfaces.CostCalculator;
+import mulan.core.ArgumentNullException;
+import weka.classifiers.Classifier;
 
 public class CftEvaluator {
 
     private final CostCalculator costCalculator;
     private final CftDataset dataset;
+    private CftDataReader cftDataReader;
+    private Classifier classifier;
 
-    public CftEvaluator(final CostCalculator costCalculator, CftDataset dataset) {
+    public CftEvaluator(final String testFilePath, int numLabelAttributes, final CostCalculator costCalculator, Classifier classifier) throws Exception {
         this.costCalculator = costCalculator;
+        this.cftDataReader = new CftDataReader();
+        this.classifier = classifier;
+
+        CftDataset dataset = cftDataReader.readData(testFilePath, numLabelAttributes);
         this.dataset = dataset;
     }
 
-    public double calculateHammingLoss(CftClassifier cftClassifier) throws Exception {
+    public double calculateHammingLoss() throws Exception {
         double cost = 0;
         int n = dataset.getInstances().numInstances();
 
         for (CftInstance cftInstance : dataset) {
 
-            String yPredicted = null;
             final String yActual = cftInstance.getYactual();
+            final String yPredicted = getYPredicted(cftInstance);
 
-            //get prediction list for instance
-            final double[] yPredictedList = cftClassifier.distributionForInstance(cftInstance.getInstance());
-            for (int i = 0; i < yPredictedList.length ; i++) {
-                if(yPredictedList[i] == 1.0)
-                {
-                    yPredicted = toBinaryString(i);
-                    break;
-                }
+            if (yPredicted == null) {
+                throw new ArgumentNullException("yPredicted");
             }
 
+            //calculate cost
             cost = cost + costCalculator.getCost(yPredicted, yActual);
         }
 
         return cost / n;
+    }
+
+    public double calculateAccuracy() throws Exception {
+
+        double miss = 0;
+        int n = dataset.getInstances().numInstances();
+
+        for (CftInstance cftInstance : dataset) {
+
+            final String yActual = cftInstance.getYactual();
+            final String yPredicted = getYPredicted(cftInstance);
+
+            if (yPredicted == null) {
+                throw new ArgumentNullException("yPredicted");
+            }
+
+            if(yActual != yPredicted)
+            {
+                miss++;
+            }
+        }
+
+        return (1 - miss/n);
+    }
+
+
+
+    private String getYPredicted(CftInstance cftInstance) throws Exception {
+
+        //get prediction list for instance
+        final double[] yPredictedList = classifier.distributionForInstance(cftInstance.getInstance());
+        for (int i = 0; i < yPredictedList.length ; i++) {
+            if(yPredictedList[i] == 1.0)
+            {
+                return toBinaryString(i);
+            }
+        }
+        return null;
     }
 
     final String toBinaryString(int index)
@@ -44,7 +85,7 @@ public class CftEvaluator {
 
         if(result.length() != k)
         {
-            int len = k - result.length(); //TODO - check indexing
+            int len = k - result.length();
             for (int i = 0; i < len; i++) {
                 result = "0" + result;
             }

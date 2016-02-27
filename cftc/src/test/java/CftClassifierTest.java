@@ -35,8 +35,7 @@ public class CftClassifierTest {
 
         final String testFilePath = CftClassifier.class.getClassLoader().getResource("emotions-test.arff").getPath();
         final CftDataset cftTestDataset = cftDataReader.readData(filePath, numOfLables);
-        CftEvaluator cftEvaluator = new CftEvaluator(costCalculator, cftTestDataset);
-        final double v = cftEvaluator.calculateHammingLoss(cftClassifier);
+
     }
 
 }

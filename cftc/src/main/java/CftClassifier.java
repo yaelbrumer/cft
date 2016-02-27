@@ -3,7 +3,6 @@ import datasets.CftDataset;
 import datasets.Classification;
 import interfaces.CostCalculator;
 import weka.classifiers.Classifier;
-import weka.classifiers.SingleClassifierEnhancer;
 import weka.classifiers.meta.MultiClassClassifier;
 import weka.core.Instance;
 
@@ -86,6 +85,8 @@ final public class CftClassifier extends MultiClassClassifier{
     public void buildClassifier(final CftDataset dataset) throws Exception {
 
         k = dataset.getNumOfLables();
+        double miss = 0;
+
         for (int i = 0; i < M; i++) {
             this.layerClassifier = buildTreeClassifier(dataset);
 
@@ -102,12 +103,18 @@ final public class CftClassifier extends MultiClassClassifier{
                 String currentClassification = layerClassifier.classifyCftInstance(cftInstance);
                 String prevClassification = cftInstance.getYpredicted();
                 if (!(currentClassification.equals(prevClassification))) {
+                    miss++; //TODO - remove that validation
                     CftInstance cftInstanceMissClassified = cftInstance.copy();
                     cftInstanceMissClassified.setYPredicted(currentClassification);
                     dataset.addMisclassified(cftInstanceMissClassified);
                 }
             }
         }
+
+        //TODO - remove that validation
+        int n = dataset.getInstances().numInstances();
+        double acc = 1 - (miss/n);
+        System.out.println("Accuracy During Training= " + acc);
     }
 
     public double[] distributionForInstance(Instance instance) throws Exception {
