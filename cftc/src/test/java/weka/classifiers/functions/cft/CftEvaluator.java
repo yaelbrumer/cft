@@ -1,6 +1,9 @@
-import model.CftDataset;
-import model.CftInstance;
-import interfaces.CostCalculator;
+package weka.classifiers.functions.cft;
+
+import weka.classifiers.functions.cft.CftDataReader;
+import weka.classifiers.functions.cft.model.CftDataset;
+import weka.classifiers.functions.cft.model.CftInstance;
+import weka.classifiers.functions.cft.interfaces.CostCalculator;
 import mulan.core.ArgumentNullException;
 import weka.classifiers.Classifier;
 import weka.core.Instances;

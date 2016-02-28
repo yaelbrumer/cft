@@ -1,3 +1,5 @@
+package weka.classifiers.functions.cft;
+
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
 

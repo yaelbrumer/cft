@@ -1,4 +1,4 @@
-package model;
+package weka.classifiers.functions.cft.model;
 
 /**
  * Created by eyapeleg on 2/18/2016.

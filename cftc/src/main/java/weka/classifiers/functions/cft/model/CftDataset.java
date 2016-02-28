@@ -1,4 +1,4 @@
-package model;
+package weka.classifiers.functions.cft.model;
 
 import weka.core.*;
 import java.util.*;

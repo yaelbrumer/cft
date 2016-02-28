@@ -1,8 +1,10 @@
-import model.CftInstance;
-import model.CftDataset;
-import model.Classification;
-import impl.HammingLossCostCalculator;
-import interfaces.CostCalculator;
+package weka.classifiers.functions.cft;
+
+import weka.classifiers.functions.cft.model.CftInstance;
+import weka.classifiers.functions.cft.model.CftDataset;
+import weka.classifiers.functions.cft.model.Classification;
+import weka.classifiers.functions.cft.impl.HammingLossCostCalculator;
+import weka.classifiers.functions.cft.interfaces.CostCalculator;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.MultiClassClassifier;
 import weka.core.*;
@@ -119,14 +121,23 @@ final public class CftClassifier extends MultiClassClassifier{
         this.M=4;
     }
 
+    /**
+     * Weka's API
+     */
     public String globalInfo() {
         return "a multi-label meta classifier.\nThe labels are converted into classes according to their binary representation.\nAn implementation of a base binary classifier is required.";
     }
 
+    /**
+     * Weka's API
+     */
     public String tipText(){
         return "a multi-label\nmeta classifier\n";
     }
 
+    /**
+     * Weka's API
+     */
     public Enumeration listOptions() {
         FastVector newVector = new FastVector(3);
         newVector.addElement(new Option("\tTurn on debugging output.", "D", 0, "-D"));
@@ -136,6 +147,9 @@ final public class CftClassifier extends MultiClassClassifier{
         return newVector.elements();
     }
 
+    /**
+     * Weka's API
+     */
     public void setOptions(String[] options) throws Exception {
 
         //D
@@ -159,6 +173,9 @@ final public class CftClassifier extends MultiClassClassifier{
         this.baseClassifierName = Utils.getOption("W",options);
     }
 
+    /**
+     * Weka's API
+     */
     public String[] getOptions() {
         String[] options = new String[7];
 
@@ -174,6 +191,9 @@ final public class CftClassifier extends MultiClassClassifier{
         return options;
     }
 
+    /**
+     * Weka's API
+     */
     public String toString(){
         LayerClassifier currentLayer =this.layerClassifier;
         String output ="";
@@ -185,15 +205,23 @@ final public class CftClassifier extends MultiClassClassifier{
         return output;
     }
 
-
+    /**
+     * Weka's API
+     */
     public void setClassifier(Classifier classifier){
         this.classifier =classifier;
     }
 
+    /**
+     * Weka's API
+     */
     public Classifier getClassifier(){
         return classifier;
     }
 
+    /**
+     * Weka's API
+     */
     public String defaultClassifierString(){
         if (baseClassifierName!=null)
             return baseClassifierName;
@@ -203,6 +231,9 @@ final public class CftClassifier extends MultiClassClassifier{
     }
 
 
+    /**
+     * Weka's API
+     */
     public void buildClassifier(Instances instances) throws Exception {
         if (K==0 || M==0)
             throw new IllegalArgumentException("Options -L and -M must be set to an integer greater than zero.");
@@ -212,6 +243,9 @@ final public class CftClassifier extends MultiClassClassifier{
         buildMultipleTreeClassifier(cftDataset);
     }
 
+    /**
+     * Weka's API
+     */
     public double[] distributionForInstance(Instance instance) throws Exception {
         double[] result = new double[(int)Math.pow(2, K)];
         CftInstance cftInstance = new CftInstance((Instance)instance.copy(),Classification.NONE,Classification.NONE,-1);

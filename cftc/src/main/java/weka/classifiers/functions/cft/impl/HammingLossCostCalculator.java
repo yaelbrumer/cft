@@ -1,7 +1,14 @@
-package impl;
+package weka.classifiers.functions.cft.impl;
 
-import interfaces.CostCalculator;
+import weka.classifiers.functions.cft.interfaces.CostCalculator;
 
+/**
+ * An implementation of the costCalculator.
+ * Calculates the cost of a miss-classification according to the Hamming Distance
+ * of the two class.
+ *
+ * e.g for 100 and 000 the hamming distance would be 1 and the cost would be 1/3.
+ */
 public final class HammingLossCostCalculator implements CostCalculator {
 
     public final double getCost(final String predicted, final String actual) {

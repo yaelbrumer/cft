@@ -1,9 +1,12 @@
-import impl.HammingLossCostCalculator;
-import interfaces.CostCalculator;
+package weka.classifiers.functions.cft;
+
+import weka.classifiers.functions.cft.BaseTest;
+import weka.classifiers.functions.cft.CftClassifier;
+import weka.classifiers.functions.cft.impl.HammingLossCostCalculator;
+import weka.classifiers.functions.cft.interfaces.CostCalculator;
 import org.junit.Test;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.Logistic;
-import weka.core.Instance;
 import weka.core.Instances;
 
 /**

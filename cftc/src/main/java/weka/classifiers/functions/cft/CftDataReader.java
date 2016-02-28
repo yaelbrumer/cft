@@ -1,5 +1,7 @@
-import model.CftDataset;
-import model.Classification;
+package weka.classifiers.functions.cft;
+
+import weka.classifiers.functions.cft.model.CftDataset;
+import weka.classifiers.functions.cft.model.Classification;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;

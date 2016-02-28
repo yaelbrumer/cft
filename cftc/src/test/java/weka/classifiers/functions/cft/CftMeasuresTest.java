@@ -1,11 +1,15 @@
-import impl.HammingLossCostCalculator;
-import interfaces.CostCalculator;
+package weka.classifiers.functions.cft;
+
+import weka.classifiers.functions.cft.BaseTest;
+import weka.classifiers.functions.cft.CftClassifier;
+import weka.classifiers.functions.cft.CftEvaluator;
+import weka.classifiers.functions.cft.impl.HammingLossCostCalculator;
+import weka.classifiers.functions.cft.interfaces.CostCalculator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.functions.LibSVM;
 import weka.classifiers.functions.Logistic;
 import weka.classifiers.trees.J48;
 
@@ -16,7 +20,7 @@ import java.text.NumberFormat;
 /**
  * Created by eyapeleg on 2/13/2016.
  */
-public class CftMeasuresTest extends BaseTest{
+public class CftMeasuresTest extends BaseTest {
 
     private static Classifier[] classifiers;
     private static int M;
