@@ -1,0 +1,30 @@
+# Package name (required)
+PackageName=cft
+
+# Version (required)
+Version=1.0.0
+
+#Date (year-month-day)
+Date=2016-02-27
+
+# Title (required)
+Title=Condensed Filter Tree Classifier
+
+# Category (recommended)
+Category= Classification algorithm
+
+# Author (required)
+Author=Eyal Peleg, Yael Brumer <eyalepeleg1101@gmail.com>,Dev2 <yael.brumer@gmail.com>,...
+
+# Maintainer (required)
+Maintainer=Eyal Peleg, Yael Brumer <eyalepeleg1101@gmail.com>,Dev2 <yael.brumer@gmail.com>,...
+
+# License (required)
+License=GPL 2.0
+
+# Description (required)
+Description= a multi label meta classifier
+
+# Dependencies (format: packageName (equality/inequality version_number)
+Depends=weka (>=3.7.1)
+
