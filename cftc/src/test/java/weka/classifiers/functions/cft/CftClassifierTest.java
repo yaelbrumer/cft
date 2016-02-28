@@ -1,5 +1,6 @@
 package weka.classifiers.functions.cft;
 
+import org.junit.Ignore;
 import weka.classifiers.functions.cft.BaseTest;
 import weka.classifiers.functions.cft.CftClassifier;
 import weka.classifiers.functions.cft.impl.HammingLossCostCalculator;
@@ -14,6 +15,7 @@ import weka.core.Instances;
  */
 public class CftClassifierTest extends BaseTest {
 
+    @Ignore
     @Test
     public void TestBuildClassifierWithoutCostFunction()throws Exception{
         Classifier classifier = new Logistic();
@@ -28,6 +30,7 @@ public class CftClassifierTest extends BaseTest {
 
     }
 
+    @Ignore
     @Test
     public void TestBuildClassifierWithCostFunction() throws Exception {
         CostCalculator costCalculator = new HammingLossCostCalculator();
