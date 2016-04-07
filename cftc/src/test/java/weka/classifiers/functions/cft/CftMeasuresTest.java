@@ -1,6 +1,11 @@
 package weka.classifiers.functions.cft;
 
 import org.junit.Ignore;
+import weka.classifiers.bayes.NaiveBayesMultinomial;
+import weka.classifiers.bayes.NaiveBayesSimple;
+import weka.classifiers.functions.LibSVM;
+import weka.classifiers.functions.MultilayerPerceptron;
+import weka.classifiers.functions.SimpleLogistic;
 import weka.classifiers.functions.cft.BaseTest;
 import weka.classifiers.functions.cft.CftClassifier;
 import weka.classifiers.functions.cft.CftEvaluator;
@@ -13,6 +18,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.Logistic;
 import weka.classifiers.trees.J48;
+import weka.classifiers.trees.RandomForest;
 
 import java.io.*;
 import java.text.DecimalFormat;
@@ -35,8 +41,8 @@ public class CftMeasuresTest extends BaseTest {
 
     @Before
     public void init() throws IOException {
-        classifiers = new Classifier[]{new J48(), new Logistic(), new NaiveBayes()};
-        M=2;
+        classifiers = new Classifier[]{new J48(), new RandomForest()};
+        M=6;
         costCalculator = new HammingLossCostCalculator();
         dataSetFileName = "dataset.csv";
 
@@ -50,7 +56,6 @@ public class CftMeasuresTest extends BaseTest {
         formatter = new DecimalFormat("#0.00000");
     }
 
-    @Ignore
     @Test
     public void testTrain() throws Exception {
 
@@ -60,7 +65,7 @@ public class CftMeasuresTest extends BaseTest {
             for (int m = 1; m <= M; m++) {
                 System.out.println(Integer.toString(m));
                 CftClassifier cftClassifier = new CftClassifier(costCalculator, classifier);
-                String dataSetFile = this.getClass().getResource(dataSetFileName).getPath();
+                String dataSetFile = this.getClass().getClassLoader().getResource(dataSetFileName).getPath();
                 BufferedReader br = null;
                 String line = "";
                 int numOfLables;
@@ -70,11 +75,11 @@ public class CftMeasuresTest extends BaseTest {
                 try {
 
                     br = new BufferedReader(new FileReader(dataSetFile));
-                    while ((line = br.readLine()) != null) {
+                    while (!(line = br.readLine()).equals("")) {
                         String[] dataset = line.split(COMMA_DELIMITER);
                         numOfLables = Integer.valueOf(dataset[2]);
-                        trainFilePath = this.getClass().getResource(dataset[0]).getPath();
-                        testFilePath = this.getClass().getResource(dataset[1]).getPath();
+                        trainFilePath = this.getClass().getClassLoader().getResource(dataset[0]).getPath();
+                        testFilePath = this.getClass().getClassLoader().getResource(dataset[1]).getPath();
                         System.out.println(dataset[0]);
 
                         String[] options = {"-L", Integer.toString(numOfLables), "-M", Integer.toString(m)};

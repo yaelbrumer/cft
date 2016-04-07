@@ -17,16 +17,15 @@ public class CftClassifierTest extends BaseTest {
 
     @Ignore
     @Test
-    public void TestBuildClassifierWithoutCostFunction()throws Exception{
+    public void TestBuildClassifierWithoutCostFunction() throws Exception {
         Classifier classifier = new Logistic();
         CftClassifier cftClassifier = new CftClassifier(classifier);
 
-        String[] options = {"-L","6","-M","5"};
+        String[] options = {"-L", "6", "-M", "5"};
         cftClassifier.setOptions(options);
 
         final Instances instances = loadInstances(CftClassifier.class.getClassLoader().getResource("emotions.arff").getPath());
         cftClassifier.buildClassifier(instances);
-
 
     }
 
@@ -37,7 +36,7 @@ public class CftClassifierTest extends BaseTest {
         Classifier classifier = new Logistic();
         CftClassifier cftClassifier = new CftClassifier(costCalculator, classifier);
 
-        String[] options = {"-L","6","-M","5"};
+        String[] options = {"-L", "6", "-M", "5"};
         cftClassifier.setOptions(options);
 
         final Instances instances = loadInstances(CftClassifier.class.getClassLoader().getResource("emotions.arff").getPath());

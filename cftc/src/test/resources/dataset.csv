@@ -1,3 +1,9 @@
-emotions-train.arff,emotions-test.arff,6
+yeast-train_fixed.arff,yeast-test_fixed.arff,6
 scene-train.arff,scene-test.arff,6
+medical-train_fixed.arff,medical-test_fixed.arff,7
+genbase-train_fixed.arff,genbase-test_fixed.arff,5
 flags-train.arff,flags-test.arff,7
+enron-train_fixed.arff,enron-test_fixed.arff,7
+emotions-train.arff,emotions-test.arff,6
+birds-train_fixed.arff,birds-test_fixed.arff,6
+
